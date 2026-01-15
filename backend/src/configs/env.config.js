@@ -14,6 +14,8 @@ const config = {
   port: Number(process.env.PORT),
   mongoUri: process.env.MONGODB_URL,
   jwt_secret: process.env.JWT_SECRET,
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASS: process.env.SMTP_PASS,
 };
 
 export default config;
