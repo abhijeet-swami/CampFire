@@ -6,6 +6,11 @@ const codeSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    tokenHash: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
