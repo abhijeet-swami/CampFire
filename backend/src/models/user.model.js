@@ -31,6 +31,9 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    camps: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Camp" }],
+    },
   },
   { timestamps: true },
 );
