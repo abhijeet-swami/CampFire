@@ -43,28 +43,25 @@ const scoreSimilarity = (titleA, titleB) => {
 
 const findDuplicate = async (title) => {
   const keywords = normalizeTitle(title);
-
-  if (keywords.length === 0) {
-    return [];
-  }
+  if (keywords.length === 0) return null;
 
   const camps = await Camp.find(
     { keywords: { $in: keywords } },
     { _id: 1, title: 1, keywords: 1 },
   ).limit(20);
 
-  if (!camps.length) return [];
+  if (!camps.length) return null;
 
-  const results = camps
+  const bestMatch = camps
     .map((camp) => ({
       campId: camp._id,
       title: camp.title,
       score: scoreSimilarity(title, camp.title),
     }))
     .filter((c) => c.score >= 0.55)
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => b.score - a.score)[0];
 
-  return results;
+  return bestMatch || null;
 };
 
 export { findDuplicate, normalizeTitle };
