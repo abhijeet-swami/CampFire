@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    interests: {
+      type: [String],
+      default: [],
+    },
     email: {
       type: String,
       unique: true,
