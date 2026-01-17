@@ -1,4 +1,5 @@
 import stopword from "stopword";
+import natural from "natural";
 import Camp from "../models/camp.model.js";
 import levenshtein from "fast-levenshtein";
 
@@ -8,7 +9,8 @@ const normalizeTitle = (title) => {
       .toLowerCase()
       .replace(/[^a-z0-9\s]/g, "")
       .split(/\s+/)
-      .filter((word) => word.length > 1),
+      .filter((word) => word.length > 1)
+      .map((word) => natural.PorterStemmer.stem(word)),
   );
 };
 
