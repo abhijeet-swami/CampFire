@@ -2,15 +2,12 @@ import asyncWrapper from "../utils/asyncWrapper.util.js";
 import Camp from "../models/camp.model.js";
 import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
-import Message from "../models/message.model.js";
 import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
-import { decodeToken } from "../utils/token.util.js";
 import { normalizeTitle, findDuplicate } from "../utils/duplicateCamp.util.js";
 
 const createCamp = asyncWrapper(async (req, res) => {
-  const token = req.cookies?.uid;
-  const userId = decodeToken(token);
+  const userId = req.userId;
   const { title, description, category } = req.body;
 
   const campExist = await Camp.exists({ createdBy: userId });
@@ -39,9 +36,9 @@ const createCamp = asyncWrapper(async (req, res) => {
 });
 
 const joinCamp = asyncWrapper(async (req, res) => {
-  const token = req.cookies?.uid;
-  const userId = decodeToken(token);
-  const { campId } = req.body;
+  const userId = req.userId;
+  const campId = req.params.id;
+  if (!campId) throw new ApiError("Camp id is required in the URL", 400);
 
   const user = await User.findById(userId);
   if (!user) throw new ApiError("User doesn't exists", 401);
