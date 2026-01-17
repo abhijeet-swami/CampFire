@@ -70,4 +70,77 @@ const joinCamp = asyncWrapper(async (req, res) => {
   sendResponse(res, 201, "You joinned the Camp", data);
 });
 
-export { createCamp, joinCamp };
+const fetchCamps = asyncWrapper(async (req, res, query) => {
+  const limit = 10;
+  const sortField = req?.sortBy
+    ? { totalUsers: -1, _id: -1 }
+    : { createdAt: -1, _id: -1 };
+
+  if (!req.body?.cursor) {
+    const camps = await Camp.find(query).limit(limit).sort(sortField);
+
+    const cursor =
+      camps.length > 0
+        ? {
+            createdAt: camps[camps.length - 1].createdAt,
+            _id: camps[camps.length - 1]._id,
+          }
+        : null;
+
+    return sendResponse(res, 200, "Camps fetched", { camps, cursor });
+  }
+
+  const { cursor } = req.body;
+
+  const paginationQuery = {
+    ...query,
+    $or: [
+      { createdAt: { $lt: cursor.createdAt } },
+      { createdAt: cursor.createdAt, _id: { $lt: cursor._id } },
+    ],
+  };
+
+  const camps = await Camp.find(paginationQuery).limit(limit).sort(sortField);
+
+  const newCursor =
+    camps.length > 0
+      ? {
+          createdAt: camps[camps.length - 1].createdAt,
+          _id: camps[camps.length - 1]._id,
+        }
+      : null;
+
+  sendResponse(res, 200, "Camps fetched", { camps, cursor: newCursor });
+});
+
+const trendingCamps = (req, res) => {
+  const query = {
+    totalUsers: { $gte: 14 },
+    createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+  };
+  return fetchCamps(req, res, query);
+};
+
+const topCamps = (req, res) => {
+  const query = {
+    totalUsers: { $gte: 20 },
+    createdAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+  };
+  req.sortBy = "totalUsers";
+  return fetchCamps(req, res, query);
+};
+
+const personalisedCamps = asyncWrapper(async (req, res) => {
+  const userId = req.userId;
+  const user = await User.findById(userId).select("interests").lean();
+
+  const query =
+    user.interests.length > 0
+      ? {
+          category: { $in: user.interests },
+        }
+      : {};
+  return fetchCamps(req, res, query);
+});
+
+export { createCamp, joinCamp, trendingCamps, topCamps, personalisedCamps };
