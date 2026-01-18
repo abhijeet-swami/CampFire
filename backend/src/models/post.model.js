@@ -20,11 +20,15 @@ const postSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
 
-postSchema.index({ campId: 1, userId: 1 }, { unique: true });
+postSchema.index({ campId: 1, userId: 1 });
 
 const Post = mongoose.model("Post", postSchema);
 
