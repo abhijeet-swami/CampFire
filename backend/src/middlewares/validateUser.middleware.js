@@ -14,7 +14,7 @@ const validateUser = asyncWrapper(async (req, res, next) => {
   const userExists = await User.exists({ _id: userId });
   if (!userExists) throw new ApiError("User account not found", 404);
 
-  req.userId = userId;
+  req.userId = userId._id;
   next();
 });
 
