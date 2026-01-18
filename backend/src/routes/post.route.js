@@ -10,9 +10,9 @@ import {
 
 const router = Router();
 
-router.post("/create/:id", validateUser, createPost);
-router.get("/get/:id", validateUser, getPosts);
-router.patch("/edit/:id", validateUser, editPost);
-router.delete("/delete/:id", validateUser, deletePost);
+router.post("/create/:campId", validateUser, createPost);
+router.get("/get/:campId", validateUser, getPosts);
+router.patch("/edit/:postId", validateUser, editPost);
+router.delete("/delete/:postId", validateUser, deletePost);
 
 export default router;

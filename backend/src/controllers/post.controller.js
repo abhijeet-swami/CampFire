@@ -7,7 +7,7 @@ import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
 
 const createPost = asyncWrapper(async (req, res) => {
-  const campId = req.params?.campId;
+  const campId = req.params.campId;
   if (!campId) throw new ApiError("Camp ID is required", 400);
 
   const { content } = req.body;
@@ -50,7 +50,7 @@ const createPost = asyncWrapper(async (req, res) => {
 });
 
 const getPosts = asyncWrapper(async (req, res) => {
-  const campId = req.params.id;
+  const campId = req.params.campId;
   if (!campId) throw new ApiError("Camp ID is required", 400);
 
   const camp = await Camp.findById(campId).select("status").lean();
@@ -92,7 +92,7 @@ const getPosts = asyncWrapper(async (req, res) => {
 });
 
 const editPost = asyncWrapper(async (req, res) => {
-  const postId = req.params.id;
+  const postId = req.params.postId;
   if (!postId) throw new ApiError("Post ID is required", 400);
 
   const post = await Post.findById(postId).select(
@@ -123,7 +123,7 @@ const editPost = asyncWrapper(async (req, res) => {
 });
 
 const deletePost = asyncWrapper(async (req, res) => {
-  const postId = req.params.id;
+  const postId = req.params.postId;
   if (!postId) throw new ApiError("Post ID is required", 400);
 
   const post = await Post.findById(postId).select("campId userId deleted");
