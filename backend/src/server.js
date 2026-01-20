@@ -1,11 +1,17 @@
 import dbConnect from "./configs/db.config.js";
 import app from "./app.js";
 import config from "./configs/env.config.js";
+import initSocket from "./socket/init.socket.js";
+import http from "http";
 
 const startServer = async () => {
   try {
     await dbConnect();
-    app.listen(config.port, () => {
+    const server = http.createServer(app);
+
+    initSocket(server);
+
+    server.listen(config.port, () => {
       console.log(`Server is running at http://localhost:${config.port}/`);
     });
   } catch (error) {
