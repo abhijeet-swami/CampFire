@@ -88,7 +88,11 @@ const getMessages = asyncWrapper(async (req, res) => {
         }
       : null;
 
-  sendResponse(res, 200, "Message fetched!", { messages, cursor: nextCursor });
+  sendResponse(res, 200, "Message fetched!", {
+    messages,
+    cursor: nextCursor,
+    me: req.userId,
+  });
 });
 
 export { addMessage, editMessage, deleteMessage, getMessages };
