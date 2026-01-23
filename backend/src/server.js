@@ -3,6 +3,7 @@ import app from "./app.js";
 import config from "./configs/env.config.js";
 import initSocket from "./socket/init.socket.js";
 import http from "http";
+import startBurning from "./utils/burnCamp.util.js";
 
 const startServer = async () => {
   try {
@@ -10,6 +11,7 @@ const startServer = async () => {
     const server = http.createServer(app);
 
     initSocket(server);
+    startBurning();
 
     server.listen(config.port, () => {
       console.log(`Server is running at http://localhost:${config.port}/`);

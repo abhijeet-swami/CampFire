@@ -7,6 +7,11 @@ const messageSchema = new mongoose.Schema(
       ref: "Post",
       required: true,
     },
+    campId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Camp",
+      required: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
