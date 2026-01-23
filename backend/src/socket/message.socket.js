@@ -13,10 +13,11 @@ const messageHandler = (io) => {
       socket.join(postId);
     });
 
-    socket.on("message", async ({ postId, text }) => {
+    socket.on("message", async ({ campId, postId, text }) => {
       try {
-        if (!postId || !text) throw new Error("postId and text required");
-        const message = await addMessage(socket.userId, postId, text);
+        if (!postId || !text || !campId)
+          throw new Error("postId, campId and text required");
+        const message = await addMessage(socket.userId, campId, postId, text);
         if (!message) throw new Error("Failed to send message");
         io.to(postId).emit("message", {
           sender: socket.id,

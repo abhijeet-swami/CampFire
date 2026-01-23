@@ -4,13 +4,14 @@ import ApiError from "../utils/ApiError.util.js";
 import asyncWrapper from "../utils/asyncWrapper.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
 
-const addMessage = async (userId, postId, text) => {
+const addMessage = async (userId, campId, postId, text) => {
   const post = await Post.findById(postId).select("deleted campId").lean();
   if (!post) throw new ApiError("Post not exists", 400);
   if (post.deleted) throw new ApiError("Post is deleted", 400);
 
   const message = new Message({
     userId,
+    campId,
     postId,
     content: text,
     campId: post.campId,
