@@ -38,9 +38,7 @@ const Login = () => {
         handleError(
           "Account not verified. Redirecting to verification page...",
         );
-        setTimeout(() => {
-          navigate("/verify");
-        }, 1000);
+        navigate("/verify");
       } else if (data.success) {
         handleSuccess(data.message);
         setTimeout(() => navigate("/"), 2000);

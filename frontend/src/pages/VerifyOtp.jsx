@@ -1,4 +1,4 @@
-import  { useContext, useRef } from "react";
+import { useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
@@ -31,7 +31,7 @@ const VerifyOtp = () => {
       const data = await response.json();
       if (data.success) {
         handleSuccess(data.message);
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/"), 1000);
       } else {
         handleError(data.message);
       }
@@ -65,6 +65,29 @@ const VerifyOtp = () => {
       inputsRef.current[index - 1].focus();
     }
   };
+
+  const handleResendCode = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/resend-otp`,
+        {
+          method: "GET",
+          credentials: "include",
+        },
+      );
+      const data = await response.json();
+      if (data.success) {
+        handleSuccess(data.message);
+        setFormData((prev) => ({ ...prev, otp: "" }));
+        inputsRef.current[0].focus();
+      } else {
+        handleError(data.message || "Failed to resend code");
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md rounded-lg border border-gray-200">
@@ -107,19 +130,15 @@ const VerifyOtp = () => {
             >
               Verify Otp
             </button>
-          </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm sm:text-md font-bold">
-              Didn't receive a otp?
-              <Link
-                to="/signup"
-                className="text-orange-400 font-bold transition-colors duration-200 rounded px-1"
-              >
-                Resend Code
-              </Link>
-            </p>
-          </div>
+            <button
+              type="button"
+              onClick={handleResendCode}
+              className="w-full mt-2 text-orange-400 font-bold underline"
+            >
+              Resend OTP
+            </button>
+          </form>
         </div>
       </div>
     </div>
