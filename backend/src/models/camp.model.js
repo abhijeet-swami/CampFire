@@ -31,6 +31,16 @@ const campSchema = new mongoose.Schema(
       min: 1,
       default: 1,
     },
+    trendingScore: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
+    topScore: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
     burnAt: {
       type: Date,
       required: true,
@@ -40,11 +50,15 @@ const campSchema = new mongoose.Schema(
       enum: ["active", "expired"],
       default: "active",
     },
+    lastActivityAt: {
+      type: Date,
+      index: true,
+    },
   },
   { timestamps: true },
 );
 
-campSchema.index({ burnAt: 1, createdAt: -1 });
+campSchema.index({ burnAt: 1, createdAt: -1, lastActivityAt: 1 });
 
 const Camp = mongoose.model("Camp", campSchema);
 
