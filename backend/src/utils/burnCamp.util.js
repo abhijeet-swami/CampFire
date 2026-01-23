@@ -1,4 +1,4 @@
-import cron from "cron";
+import cron from "node-cron";
 import Camp from "../models/camp.model.js";
 import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
