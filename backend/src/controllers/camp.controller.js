@@ -74,77 +74,109 @@ const joinCamp = asyncWrapper(async (req, res) => {
   sendResponse(res, 201, "You joinned the Camp", data);
 });
 
-const fetchCamps = asyncWrapper(async (req, res, query) => {
-  const limit = 10;
-  const sortField = req?.sortBy
-    ? { totalUsers: -1, _id: -1 }
-    : { createdAt: -1, _id: -1 };
+const fetchCamps = async ({
+  field = "trendingScore",
+  limit = 10,
+  cursor = null,
+}) => {
+  try {
+    if (!cursor) {
+      const camps = await Camp.find({ topScore: { $ne: 0 } })
+        .sort({ [field]: -1, _id: -1 })
+        .limit(limit);
 
-  if (!req.body?.cursor) {
-    const camps = await Camp.find(query).limit(limit).sort(sortField);
+      const newCursor =
+        camps.length > 0
+          ? {
+              value: camps[camps.length - 1][field],
+              _id: camps[camps.length - 1]._id,
+            }
+          : null;
 
-    const cursor =
+      return { camps, cursor: newCursor };
+    }
+
+    const camps = await Camp.find({
+      $or: [
+        { [field]: { $lt: cursor.value } },
+        { [field]: cursor.value, _id: { $lt: cursor._id } },
+      ],
+    })
+      .sort({ [field]: -1, _id: -1 })
+      .limit(limit);
+
+    const newCursor =
       camps.length > 0
         ? {
-            createdAt: camps[camps.length - 1].createdAt,
+            value: camps[camps.length - 1][field],
             _id: camps[camps.length - 1]._id,
           }
         : null;
 
-    return sendResponse(res, 200, "Camps fetched", { camps, cursor });
+    return { camps, cursor: newCursor };
+  } catch (error) {
+    throw new ApiError("Failed to fetch camps", 500);
   }
+};
 
-  const { cursor } = req.body;
-
-  const paginationQuery = {
-    ...query,
-    $or: [
-      { createdAt: { $lt: cursor.createdAt } },
-      { createdAt: cursor.createdAt, _id: { $lt: cursor._id } },
-    ],
-  };
-
-  const camps = await Camp.find(paginationQuery).limit(limit).sort(sortField);
-
-  const newCursor =
-    camps.length > 0
-      ? {
-          createdAt: camps[camps.length - 1].createdAt,
-          _id: camps[camps.length - 1]._id,
-        }
-      : null;
-
-  sendResponse(res, 200, "Camps fetched", { camps, cursor: newCursor });
+const trendingCamps = asyncWrapper(async (req, res) => {
+  const { camps, cursor } = await fetchCamps({
+    field: "trendingScore",
+    limit: 10,
+    cursor: req.body?.cursor,
+  });
+  sendResponse(res, 200, "Trending Camps", { camps, cursor });
 });
 
-const trendingCamps = (req, res) => {
-  const query = {
-    totalUsers: { $gte: 14 },
-    createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-  };
-  return fetchCamps(req, res, query);
-};
-
-const topCamps = (req, res) => {
-  const query = {
-    totalUsers: { $gte: 20 },
-    createdAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-  };
-  req.sortBy = "totalUsers";
-  return fetchCamps(req, res, query);
-};
+const topCamps = asyncWrapper(async (req, res) => {
+  const { camps, cursor } = await fetchCamps({
+    field: "topScore",
+    limit: 10,
+    cursor: req.body?.cursor,
+  });
+  sendResponse(res, 200, "Top Camps", { camps, cursor });
+});
 
 const personalisedCamps = asyncWrapper(async (req, res) => {
   const userId = req.userId;
+  const { cursor } = req.body;
+
   const user = await User.findById(userId).select("interests").lean();
 
-  const query =
-    user.interests.length > 0
-      ? {
-          category: { $in: user.interests },
-        }
-      : {};
-  return fetchCamps(req, res, query);
+  const baseQuery = {
+    category: { $in: user.interests },
+  };
+
+  if (cursor) {
+    baseQuery.$or = [
+      { createdAt: { $lt: cursor.createdAt } },
+      {
+        createdAt: cursor.createdAt,
+        _id: { $lt: cursor._id },
+      },
+    ];
+  }
+
+  const camps = await Camp.find(baseQuery)
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(10);
+
+  if (camps.length === 0) {
+    return sendResponse(res, 200, "Camps fetched", {
+      camps: [],
+      cursor: null,
+    });
+  }
+
+  const newCursor = {
+    createdAt: camps[camps.length - 1].createdAt,
+    _id: camps[camps.length - 1]._id,
+  };
+
+  sendResponse(res, 200, "Camps fetched", {
+    camps,
+    cursor: newCursor,
+  });
 });
 
 export { createCamp, joinCamp, trendingCamps, topCamps, personalisedCamps };
