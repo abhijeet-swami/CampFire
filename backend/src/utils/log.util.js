@@ -1,7 +1,7 @@
 import Log from "../models/log.model.js";
 
 const addLog = async (campId, type) => {
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
   const log = new Log({
     campId,

@@ -2,12 +2,12 @@ import Camp from "../models/camp.model.js";
 import Log from "../models/log.model.js";
 import cron from "node-cron";
 
-const scoreTrendingCamp = async () => {
+const scoreTrendingCamp = async (query, limit = 500) => {
   try {
-    const scores = await Log.aggregate([
+    return await Log.aggregate([
       {
         $match: {
-          createdAt: { $gt: new Date(Date.now() - 60 * 60 * 1000) },
+          createdAt: query,
         },
       },
       {
@@ -26,6 +26,19 @@ const scoreTrendingCamp = async () => {
         },
       },
       {
+        $addFields: {
+          totalActivity: {
+            $add: [
+              { $multiply: ["$postCount", 3] },
+              { $multiply: ["$userCount", 2] },
+              "$messageCount",
+            ],
+          },
+        },
+      },
+      { $sort: { totalActivity: -1 } },
+      { $limit: limit },
+      {
         $project: {
           _id: 0,
           campId: "$_id",
@@ -36,46 +49,68 @@ const scoreTrendingCamp = async () => {
         },
       },
     ]);
-    if (scores.length < 1) return scores;
+  } catch (error) {
+    console.log(error.message);
+    return [];
+  }
+};
+const calculateScore = (score, decayPower, timeDivisor) => {
+  const base = score.postCount * 3 + score.userCount * 2 + score.messageCount;
 
-    for (const score of scores) {
-      const calclate =
-        score.postCount * 3 + score.userCount * 2 + score.messageCount * 1;
-      const minutesAgo =
-        (Date.now() - score.lastActivityAt.getTime()) / (1000 * 60);
+  const age = (Date.now() - score.lastActivityAt.getTime()) / timeDivisor;
 
-      const decay = Math.pow(minutesAgo + 1, 0.8);
-      score.trendingScore = calclate / decay;
-    }
+  const decay = Math.pow(age + 1, decayPower);
+  return base / decay;
+};
 
-    return scores;
+const updateScores = async ({ query, field, decayPower, timeDivisor }) => {
+  try {
+    const scores = await scoreTrendingCamp(query);
+    if (!scores.length) return;
+
+    const bulkOps = scores.map((score) => ({
+      updateOne: {
+        filter: { _id: score.campId },
+        update: {
+          $set: {
+            [field]: calculateScore(score, decayPower, timeDivisor),
+          },
+        },
+      },
+    }));
+
+    await Camp.bulkWrite(bulkOps);
   } catch (error) {
     console.log(error.message);
   }
 };
 
-const updateTrendingScores = async () => {
-  const scores = await scoreTrendingCamp();
-  if (!scores.length) return;
+const updateTrendingScores = () =>
+  updateScores({
+    query: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    field: "trendingScore",
+    decayPower: 0.8,
+    timeDivisor: 1000 * 60 * 60,
+  });
 
-  const bulkOps = scores.map((score) => ({
-    updateOne: {
-      filter: { _id: score.campId },
-      update: {
-        $set: {
-          trendingScore: score.trendingScore,
-        },
-      },
-    },
-  }));
-
-  await Camp.bulkWrite(bulkOps);
-};
+const updateTopScores = () =>
+  updateScores({
+    query: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    field: "topScore",
+    decayPower: 0.2,
+    timeDivisor: 1000 * 60 * 60 * 24,
+  });
 
 const updateTrending = () => {
+  updateTrendingScores();
+  updateTopScores();
+
   cron.schedule("0 * * * *", () => {
-    console.log("Updating trending camps...");
     updateTrendingScores();
+  });
+
+  cron.schedule("0 */6 * * *", () => {
+    updateTopScores();
   });
 };
 
