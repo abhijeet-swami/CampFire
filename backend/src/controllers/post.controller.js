@@ -56,7 +56,9 @@ const getPosts = asyncWrapper(async (req, res) => {
   const campId = req.params.campId;
   if (!campId) throw new ApiError("Camp ID is required", 400);
 
-  const camp = await Camp.findById(campId).select("status").lean();
+  const camp = await Camp.findById(campId)
+    .select("status burnAt title description totalUsers")
+    .lean();
   if (!camp) throw new ApiError("Camp not found", 404);
   if (camp.status === "expired") throw new ApiError("Camp expired", 403);
 
@@ -95,6 +97,7 @@ const getPosts = asyncWrapper(async (req, res) => {
       : null;
 
   sendResponse(res, 200, "Posts fetched", {
+    camp,
     posts,
     cursor: nextCursor,
   });
