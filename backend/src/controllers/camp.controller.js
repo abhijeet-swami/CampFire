@@ -81,7 +81,7 @@ const fetchCamps = async ({
 }) => {
   try {
     if (!cursor) {
-      const camps = await Camp.find({ topScore: { $ne: 0 } })
+      const camps = await Camp.find()
         .sort({ [field]: -1, _id: -1 })
         .limit(limit);
 
@@ -139,13 +139,15 @@ const topCamps = asyncWrapper(async (req, res) => {
 
 const personalisedCamps = asyncWrapper(async (req, res) => {
   const userId = req.userId;
-  const { cursor } = req.body;
+  const cursor = req.body?.cursor || null;
 
   const user = await User.findById(userId).select("interests").lean();
 
-  const baseQuery = {
-    category: { $in: user.interests },
-  };
+  const baseQuery = {};
+
+  if (user.interests.length > 0) {
+    baseQuery.category = { $in: user.interests };
+  }
 
   if (cursor) {
     baseQuery.$or = [
