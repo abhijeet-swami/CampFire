@@ -90,14 +90,14 @@ const VerifyOtp = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md rounded-lg border border-gray-200">
-        <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-10">
+      <div className="w-full max-w-md rounded-2xl border border-[#1f1f23]">
+        <div className="bg-[#111113] rounded-2xl shadow-xl p-8 sm:p-10">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-xl sm:text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-xl sm:text-3xl font-bold text-[#fafafa] mb-2">
               Enter Verification Code
             </h1>
-            <p className="text-gray-600 text-sm sm:text-base">
+            <p className="text-[#a3a3a3] text-sm sm:text-base">
               We've sent 6-digit otp to your email.
               <span className="block">
                 Enter it below to ignite your session.
@@ -117,7 +117,7 @@ const VerifyOtp = () => {
                   inputMode="numeric"
                   onChange={(e) => handleOtpChange(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="w-10 h-10 sm:w-12 sm:h-12 text-center outline-none text-base sm:text-lg md:text-xl border border-orange-400 rounded-lg"
+                  className="w-10 h-10 sm:w-12 sm:h-12 text-center outline-none text-base sm:text-lg md:text-xl bg-[#2d2d30] text-white border border-[#1f1f23] rounded-lg"
                   autoComplete="one-time-code"
                 />
               ))}
@@ -126,7 +126,7 @@ const VerifyOtp = () => {
             <button
               disabled={loading}
               type="submit"
-              className={`w-full bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 px-4 rounded-lg shadow-lg mt-6 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-orange-400 hover:bg-orange-300 text-black font-bold py-3 px-4 rounded-lg shadow-lg mt-6 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Verify Otp
             </button>

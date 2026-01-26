@@ -66,14 +66,14 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md rounded-lg border border-gray-200">
-        <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-10">
+      <div className="w-full max-w-md rounded-2xl border-[#1f1f23]">
+        <div className="bg-[#111113] rounded-2xl shadow-xl p-8 sm:p-10">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl text-[#fafafa] sm:text-4xl font-bold mb-2">
               Create Account
             </h1>
-            <p className="text-gray-600 text-sm sm:text-base">
+            <p className="text-[#a3a3a3] text-sm sm:text-base">
               Join CampFire and start connecting
             </p>
           </div>
@@ -83,7 +83,7 @@ const Signup = () => {
             <div>
               <label
                 htmlFor="fullName"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-[#fafafa] mb-2"
               >
                 Full Name
               </label>
@@ -94,7 +94,7 @@ const Signup = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter your name"
-                className="w-full px-4 py-2 rounded-lg border-2 transition-all duration-200 placeholder-gray-400 text-gray-900 outline-none"
+                className="w-full px-4 py-2 rounded-lg transition-all duration-200 placeholder-gray-400 bg-[#18181b] text-white border border-[#1f1f23] outline-none"
                 aria-label="Full Name"
               />
             </div>
@@ -103,7 +103,7 @@ const Signup = () => {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-[#fafafa] mb-2"
               >
                 Username
               </label>
@@ -114,7 +114,7 @@ const Signup = () => {
                 value={formData.username}
                 onChange={handleInputChange}
                 placeholder="Enter your username"
-                className="w-full px-4 py-2 rounded-lg border-2 transition-all duration-200 placeholder-gray-400 text-gray-900 outline-none"
+                className="w-full px-4 py-2 rounded-lg transition-all duration-200 placeholder-gray-400 bg-[#18181b] text-white border border-[#1f1f23] outline-none"
                 aria-label="Username"
               />
             </div>
@@ -123,7 +123,7 @@ const Signup = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-[#fafafa] mb-2"
               >
                 Email Address
               </label>
@@ -134,7 +134,7 @@ const Signup = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Enter your email"
-                className="w-full px-4 py-2 rounded-lg border-2 transition-all duration-200  placeholder-gray-400 text-gray-900 outline-none"
+                className="w-full px-4 py-2 rounded-lg transition-all duration-200  placeholder-gray-400 bg-[#18181b] text-white border border-[#1f1f23] outline-none"
                 aria-label="Email Address"
               />
             </div>
@@ -143,7 +143,7 @@ const Signup = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-[#fafafa] mb-2"
               >
                 Password
               </label>
@@ -155,7 +155,7 @@ const Signup = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   placeholder="Enter your password"
-                  className="w-full px-4 py-2 rounded-lg border-2 transition-all duration-200  placeholder-gray-400 text-gray-900 outline-none"
+                  className="w-full px-4 py-2 rounded-lg transition-all duration-200  placeholder-gray-400 bg-[#18181b] text-white border border-[#1f1f23] outline-none"
                 />
                 <button
                   type="button"
@@ -164,9 +164,9 @@ const Signup = () => {
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <IoEyeOffOutline className="h-5 w-5" />
+                    <IoEyeOffOutline className="h-5 w-5 text-white" />
                   ) : (
-                    <IoEyeOutline className="h-5 w-5" />
+                    <IoEyeOutline className="h-5 w-5 text-white" />
                   )}
                 </button>
               </div>
@@ -176,18 +176,18 @@ const Signup = () => {
             <button
               disabled={loading}
               type="submit"
-              className={`mt-10 w-full bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 px-4 rounded-lg shadow-lg ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`mt-10 w-full bg-orange-400 hover:bg-orange-300 text-black font-bold py-3 px-4 rounded-lg shadow-lg ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Join the Camp
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm sm:text-md font-bold">
+            <p className="text-[#a3a3a3] text-sm sm:text-md font-bold">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-orange-400 font-bold transition-colors duration-200 rounded px-1"
+                className="text-white font-bold transition-colors duration-200 rounded px-1"
               >
                 Login
               </Link>

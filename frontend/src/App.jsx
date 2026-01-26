@@ -6,15 +6,27 @@ import Signup from "./pages/Signup";
 import Navbar from "./components/Navbar";
 import { ToastContainer } from "react-toastify";
 import VerifyOtp from "./pages/VerifyOtp";
+import HomeCamp from "./components/HomeCamp";
+import CreateCamp from "./components/CreateCamp";
+import TopCharts from "./components/TopCharts";
+import YourCamp from "./components/YourCamp";
+import Settings from "./components/Settings";
 const App = () => {
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/verify" element={<VerifyOtp/>}/>
+        <Route path="/verify" element={<VerifyOtp />} />
+
+        <Route path="/" element={<Home />}>
+          <Route index element={<HomeCamp />} />
+          <Route path="charts" element={<TopCharts />} />
+          <Route path="your-camps" element={<YourCamp />} />
+          <Route path="create" element={<CreateCamp />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Routes>
 
       <ToastContainer />
