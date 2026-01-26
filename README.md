@@ -1,6 +1,6 @@
 # CampFire
 
-CampFire is a backend service for a community-driven discussion platform built around time-bound groups called camps.
+CampFire is a a community-driven discussion platform built around time-bound groups called camps.
 
 The system is designed to support focused conversations by limiting the lifespan of communities and controlling posting behavior. It provides APIs for camp management, posts, and real-time messaging, with an emphasis on clean domain modeling and scalability.
 
