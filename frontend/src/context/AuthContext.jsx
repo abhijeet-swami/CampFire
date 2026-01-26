@@ -11,7 +11,6 @@ export const AuthContextProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [activetab, setActiveTab] = useState("homeCamp");
 
   return (
     <AuthContext.Provider
@@ -22,8 +21,6 @@ export const AuthContextProvider = ({ children }) => {
         setLoading,
         showPassword,
         setShowPassword,
-        activetab,
-        setActiveTab,
       }}
     >
       {children}
