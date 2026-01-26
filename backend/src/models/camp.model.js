@@ -31,6 +31,16 @@ const campSchema = new mongoose.Schema(
       min: 1,
       default: 1,
     },
+    trendingScore: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
+    topScore: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
     burnAt: {
       type: Date,
       required: true,
