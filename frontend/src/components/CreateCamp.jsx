@@ -18,7 +18,7 @@ const CreateCamp = () => {
     "Startup",
   ];
 
-  const { campForm, setCampForm, loading, setLoading, setYourCamp } =
+  const { campForm, setCampForm, loading, setLoading } =
     useContext(AuthContext);
 
   const handleInputChange = (e) => {
@@ -72,7 +72,6 @@ const CreateCamp = () => {
       const data = await response.json();
       if (data.success) {
         handleSuccess(data.message);
-        setYourCamp(data.data);
         setTimeout(() => navigate("/your-camps"), 2000);
       } else {
         handleError(data.message);

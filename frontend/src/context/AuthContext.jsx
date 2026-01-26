@@ -17,7 +17,7 @@ export const AuthContextProvider = ({ children }) => {
     description: "",
     category: "",
   });
-  const [yourCamp, setYourCamp] = useState(null);
+  const [yourCamps, setYourCamps] = useState(null);
 
   return (
     <AuthContext.Provider
@@ -30,8 +30,8 @@ export const AuthContextProvider = ({ children }) => {
         setShowPassword,
         campForm,
         setCampForm,
-        yourCamp,
-        setYourCamp,
+        yourCamps,
+        setYourCamps,
       }}
     >
       {children}

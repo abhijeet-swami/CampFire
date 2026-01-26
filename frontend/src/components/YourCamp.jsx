@@ -2,9 +2,11 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/authContext";
 import { FaUserGroup } from "react-icons/fa6";
 import { handleError } from "../notify/Notification";
+import { FaRegClock } from "react-icons/fa";
 
 const YourCamp = () => {
-  const { setLoading, yourCamp, setYourCamp } = useContext(AuthContext);
+  const { setLoading, yourCamps, setYourCamps } = useContext(AuthContext);
+
   useEffect(() => {
     const fetchCamps = async () => {
       try {
@@ -17,8 +19,9 @@ const YourCamp = () => {
           },
         );
 
-        const data = await response.json();
-        setYourCamp(data);
+        const result = await response.json();
+        console.log(result.data);
+        setYourCamps(result.data.camps);
       } catch (error) {
         handleError(error);
       } finally {
@@ -27,9 +30,9 @@ const YourCamp = () => {
     };
 
     fetchCamps();
-  });
+  }, [setLoading, setYourCamps]);
 
-  if (!yourCamp) {
+  if (!yourCamps || yourCamps.length === 0) {
     return (
       <div className="p-4 sm:p-5 rounded-xl bg-[#111113] border border-[#1f1f23] text-[#a3a3a3]">
         <h2 className="text-base sm:text-lg font-semibold text-white">
@@ -42,57 +45,58 @@ const YourCamp = () => {
     );
   }
 
+  const getRemainingTime = (burnAt) => {
+    const now = new Date();
+    const end = new Date(burnAt);
+
+    const diffMs = end - now;
+
+    if (diffMs <= 0) return "Expired";
+
+    const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(totalHours / 24);
+    const hours = totalHours % 24;
+
+    if (days > 0) {
+      return `${days}d ${hours}hr`;
+    }
+
+    return `${hours}hr`;
+  };
+
   return (
-    <div
-      className="
-        w-full
-        sm:max-w-sm
-        bg-[#111113]
-        border border-[#1f1f23]
-        rounded-2xl
-        p-3 sm:p-5
-        transition-all
-        sm:m-2
-        hover:border-orange-500
-      "
-    >
-      <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2 sm:mb-3">
-        {yourCamp.category.map((cat, index) => (
-          <span
-            key={index}
-            className="
-              px-2 py-0.5
-              text-[10px] sm:text-xs
-              rounded-full
-              bg-[#18181b]
-              border border-[#27272a]
-              text-gray-300
-            "
-          >
-            {cat}
-          </span>
-        ))}
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:m-2">
+      {yourCamps.map((camp) => (
+        <div
+          key={camp._id}
+          className="bg-[#111113] border border-[#1f1f23] rounded-2xl p-4 hover:border-orange-500"
+        >
+          <div className="flex flex-wrap gap-2 mb-5">
+            {camp.category.map((cat, i) => (
+              <span
+                key={i}
+                className="px-4 py-2 text-xs rounded-full bg-[#18181b] border border-[#27272a] text-gray-300"
+              >
+                {cat}
+              </span>
+            ))}
+            <span className="flex gap-2 px-2 py-2 text-[10px] sm:text-xs rounded-full bg-orange-500/10 text-orange-400">
+              <FaRegClock className="text-[10px] sm:text-xs mt-0.5" />
+              {getRemainingTime(camp.burnAt)}
+            </span>
+          </div>
 
-        <span className="px-2 py-0.5 text-[10px] sm:text-xs rounded-full bg-orange-500/10 text-orange-400">
-          ⏳ {new Date(yourCamp.burnAt).toLocaleDateString()}
-        </span>
-      </div>
+          <h3 className="text-white text-xl font-semibold">{camp.title}</h3>
+          <p className="text-md text-gray-400 line-clamp-2 mt-1">
+            {camp.description}
+          </p>
 
-      <h3 className="text-white font-semibold text-sm sm:text-lg leading-snug">
-        {yourCamp.title}
-      </h3>
-
-      <p className="text-xs sm:text-sm text-gray-400 mt-1 line-clamp-2 sm:line-clamp-3">
-        {yourCamp.description}
-      </p>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between mt-3 sm:mt-4 text-[11px] sm:text-xs text-gray-400">
-        <div className="flex items-center gap-1">
-          <FaUserGroup className="text-[12px] sm:text-[14px]" />
-          <span>{yourCamp.totalUsers} members</span>
+          <div className="flex items-center gap-2 text-xs text-gray-400 mt-4">
+            <FaUserGroup />
+            <span>{camp.totalUsers}</span>
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 };
