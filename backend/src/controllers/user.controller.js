@@ -45,4 +45,36 @@ const changeMetaData = asyncWrapper(async (req, res) => {
   });
 });
 
-export { changePassword, changeMetaData };
+const addInterests = asyncWrapper(async (req, res) => {
+  const { interests } = req.body;
+  if (!interests || interests < 0)
+    throw new ApiError("Atleast one interest required", 401);
+
+  const allowedSet = new Set([
+    "tech",
+    "art",
+    "news",
+    "sports",
+    "nature",
+    "photography",
+    "music",
+    "gaming",
+    "education",
+    "startup",
+  ]);
+
+  const check = interests.every((interest) =>
+    allowedSet.has(interest.toLowerCase()),
+  );
+  if (!check) throw new ApiError("Only allowed interests can be added", 400);
+
+  const user = await User.findById(req.userId).select("interests");
+  if (!user) throw new ApiError("User not found", 404);
+
+  user.interests = interests;
+  await user.save();
+
+  sendResponse(res, 200, "Interests added");
+});
+
+export { changePassword, changeMetaData, addInterests };

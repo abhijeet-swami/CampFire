@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     interests: {
       type: [String],
+      lowercase: true,
       default: [],
     },
     email: {
