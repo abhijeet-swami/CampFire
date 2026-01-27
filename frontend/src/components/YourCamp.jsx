@@ -20,7 +20,6 @@ const YourCamp = () => {
         );
 
         const result = await response.json();
-        console.log(result.data);
         setYourCamps(result.data.camps);
       } catch (error) {
         handleError(error);
