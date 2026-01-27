@@ -17,7 +17,9 @@ export const AuthContextProvider = ({ children }) => {
     description: "",
     category: "",
   });
-  const [yourCamps, setYourCamps] = useState(null);
+  const [yourCamps, setYourCamps] = useState([]);
+  const [trendingCamps, setTrendingCamps] = useState([]);
+  const [topCamps, setTopCamps] = useState([]);
 
   return (
     <AuthContext.Provider
@@ -32,6 +34,10 @@ export const AuthContextProvider = ({ children }) => {
         setCampForm,
         yourCamps,
         setYourCamps,
+        trendingCamps,
+        setTrendingCamps,
+        topCamps,
+        setTopCamps,
       }}
     >
       {children}
