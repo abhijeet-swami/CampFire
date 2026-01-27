@@ -3,9 +3,11 @@ import { AuthContext } from "../context/authContext";
 import { FaUserGroup } from "react-icons/fa6";
 import { handleError } from "../notify/Notification";
 import { FaRegClock } from "react-icons/fa";
+import Loader from "./Loader";
 
 const YourCamp = () => {
-  const { setLoading, yourCamps, setYourCamps } = useContext(AuthContext);
+  const { loading, setLoading, yourCamps, setYourCamps } =
+    useContext(AuthContext);
 
   useEffect(() => {
     const fetchCamps = async () => {
@@ -30,6 +32,10 @@ const YourCamp = () => {
 
     fetchCamps();
   }, [setLoading, setYourCamps]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   if (!yourCamps || yourCamps.length === 0) {
     return (
