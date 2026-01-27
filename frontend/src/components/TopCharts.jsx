@@ -1,10 +1,19 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { handleError } from "../notify/Notification";
 import CampsGrid from "./CampsGrid";
+import Loader from "./Loader";
 const TopCharts = () => {
-  const { trendingCamps, setTrendingCamps, setLoading, topCamps, setTopCamps } =
-    useContext(AuthContext);
+  const {
+    trendingCamps,
+    setTrendingCamps,
+    setLoading,
+    topCamps,
+    setTopCamps,
+    loading,
+  } = useContext(AuthContext);
+
+  const [activeTab, setActiveTab] = useState("trending");
 
   useEffect(() => {
     const fetchCamps = async () => {
@@ -36,6 +45,10 @@ const TopCharts = () => {
     fetchCamps();
   }, [setLoading, setTopCamps, setTrendingCamps]);
 
+  if (loading) {
+    return <Loader />;
+  }
+
   if (!trendingCamps || trendingCamps.length === 0) {
     return (
       <div className="p-4 sm:p-5 rounded-xl bg-[#111113] border border-[#1f1f23] text-[#a3a3a3]">
@@ -48,15 +61,33 @@ const TopCharts = () => {
 
   return (
     <>
-      <section>
-        <h2 className="text-lg font-bold text-white mb-3">🔥 Trending Camps</h2>
-        <CampsGrid camps={trendingCamps} />
-      </section>
+      <div className="flex gap-2 mb-5 p-2">
+        <button
+          onClick={() =>
+            setActiveTab((prev) => (prev === "trending" ? "top" : "trending"))
+          }
+          className={`px-4 py-2 text-sm font-bold rounded-2xl transition bg-[#18181b] border border-[#27272a]
+            ${
+              activeTab === "trending"
+                ? "bg-orange-400 text-black"
+                : "bg-orange-400 text-black"
+            }`}
+        >
+          {activeTab === "trending" ? "🔥 Trending" : "🏆 Top"}
+        </button>
+      </div>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-bold text-white mb-3">🏆 Top Camps</h2>
-        <CampsGrid camps={topCamps} />
-      </section>
+      {activeTab === "trending" && (
+        <section>
+          <CampsGrid camps={trendingCamps} />
+        </section>
+      )}
+
+      {activeTab === "top" && (
+        <section>
+          <CampsGrid camps={topCamps} />
+        </section>
+      )}
     </>
   );
 };
