@@ -74,7 +74,6 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md rounded-2xl border border-[#1f1f23]">
         <div className="bg-[#111113] rounded-2xl shadow-xl p-8 sm:p-10">
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl text-[#fafafa] sm:text-4xl font-bold mb-2">
               Welcome Back
@@ -84,9 +83,7 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
-            {/* Username Input */}
             <div>
               <label
                 htmlFor="username"
@@ -138,11 +135,16 @@ const Login = () => {
               </div>
             </div>
 
-            {/* login Button */}
+            <div className="flex justify-end">
+              <Link to="/forgot-password" className="text-white cursor-pointer">
+                Forgot password?
+              </Link>
+            </div>
+
             <button
               disabled={loading}
               type="submit"
-              className={`w-full bg-orange-400 hover:bg-orange-300 text-black font-bold py-3 px-4 rounded-lg shadow-lg mt-6 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-orange-400 hover:bg-orange-300 text-black font-bold py-3 px-4 rounded-lg shadow-lg ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Enter the Camp
             </button>
