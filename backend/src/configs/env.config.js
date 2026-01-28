@@ -17,6 +17,11 @@ const config = {
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
   FRONTEND_URL: process.env.FRONTEND_URL,
+  CLOUDINARY: {
+    name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  },
 };
 
 export default config;

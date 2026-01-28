@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import asyncWrapper from "../utils/asyncWrapper.util.js";
 import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
+import { deleteImage, uploadImage } from "../services/cloudinary.service.js";
 
 const changePassword = asyncWrapper(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
@@ -77,4 +78,23 @@ const addInterests = asyncWrapper(async (req, res) => {
   sendResponse(res, 200, "Interests added");
 });
 
-export { changePassword, changeMetaData, addInterests };
+const updateAvatar = asyncWrapper(async (req, res) => {
+  const file = req?.file;
+  if (!file) throw new ApiError("File required", 401);
+
+  const avatar = await uploadImage(file.path);
+  if (!avatar) throw new ApiError("Image not uploaded", 400);
+
+  const user = await User.findById(req.userId).select("avatar username");
+  if (!user) throw new ApiError("User not found", 404);
+
+  const oldAvatar = user.avatar;
+  if (oldAvatar.url) await deleteImage(oldAvatar.id);
+
+  user.avatar = avatar;
+  user.save();
+
+  sendResponse(res, 200, "Avatar updated");
+});
+
+export { changePassword, changeMetaData, addInterests, updateAvatar };
