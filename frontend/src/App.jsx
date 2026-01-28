@@ -13,6 +13,9 @@ import YourCamp from "./components/YourCamp";
 import Settings from "./components/Settings";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetVerifyPassword from "./pages/ResetVerifyPassword";
+import AccountProfile from "./pages/AccountProfile";
+import SecurityPrivacy from "./pages/SecurityPrivacy";
+import AddInterests from "./pages/AddInterests";
 const App = () => {
   return (
     <>
@@ -30,6 +33,10 @@ const App = () => {
           <Route path="your-camps" element={<YourCamp />} />
           <Route path="create" element={<CreateCamp />} />
           <Route path="settings" element={<Settings />} />
+
+          <Route path="settings/account" element={<AccountProfile />} />
+          <Route path="settings/privacy" element={<SecurityPrivacy />} />
+          <Route path="settings/add-interest" element={<AddInterests />} />
         </Route>
       </Routes>
 
