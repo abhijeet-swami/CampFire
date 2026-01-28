@@ -32,6 +32,16 @@ const userSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
+    avatar: {
+      id: {
+        type: String,
+        default: null,
+      },
+      url: {
+        type: String,
+        default: null,
+      },
+    },
     isVerified: {
       type: Boolean,
       default: false,

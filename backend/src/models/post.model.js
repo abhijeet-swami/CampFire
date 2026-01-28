@@ -16,10 +16,12 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    images: {
-      type: [String],
-      default: [],
-    },
+    images: [
+      {
+        id: String,
+        url: String,
+      },
+    ],
     deleted: {
       type: Boolean,
       default: false,
