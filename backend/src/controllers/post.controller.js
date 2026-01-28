@@ -6,6 +6,7 @@ import Message from "../models/message.model.js";
 import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
 import addLog from "../utils/log.util.js";
+import { uploadImage } from "../services/cloudinary.service.js";
 
 const createPost = asyncWrapper(async (req, res) => {
   const campId = req.params.campId;
@@ -38,10 +39,20 @@ const createPost = asyncWrapper(async (req, res) => {
       429,
     );
 
+  const image = req?.file;
+  const images = [];
+  if (image) {
+    const uploaded = await uploadImage(images.path, "post");
+    if (uploaded) {
+      images.push({ id: uploaded.id, url: uploaded.url });
+    }
+  }
+
   const post = new Post({
     campId,
     userId: req.userId,
     content,
+    images,
   });
 
   await post.save();
