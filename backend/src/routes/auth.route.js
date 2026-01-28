@@ -4,7 +4,9 @@ import {
   resendCode,
   login,
   forgotPassword,
+  logout,
 } from "../controllers/auth.controller.js";
+import { validateUser } from "../middlewares/validateUser.middleware.js";
 import express from "express";
 
 const router = express.Router();
@@ -14,5 +16,6 @@ router.post("/verify-otp", verifyCode);
 router.get("/resend-otp", resendCode);
 router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
+router.post("/logout", validateUser, logout);
 
 export default router;

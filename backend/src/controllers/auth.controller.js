@@ -162,4 +162,13 @@ const forgotPassword = asyncWrapper(async (req, res) => {
   sendResponse(res, 200, "Otp sent");
 });
 
-export { register, login, verifyCode, resendCode, forgotPassword };
+const logout = asyncWrapper(async (req, res) => {
+  res.clearCookie("uid", {
+    httpOnly: true,
+    sameSite: "strict",
+  });
+
+  sendResponse(res, 200, "Logout successfully");
+});
+
+export { register, login, verifyCode, resendCode, forgotPassword, logout };
