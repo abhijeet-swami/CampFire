@@ -56,7 +56,7 @@ const verifyCode = asyncWrapper(async (req, res) => {
   }
 
   const user = await User.findById(verify.user_id).select(
-    "name username email isVerified",
+    "name username email isVerified interests",
   );
   if (!user) throw new ApiError("User not found, register again", 401);
   user.isVerified = true;
@@ -73,6 +73,7 @@ const verifyCode = asyncWrapper(async (req, res) => {
     name: user.name,
     username: user.username,
     email: user.email,
+    interests: user.interests,
   });
 });
 
@@ -137,6 +138,7 @@ const login = asyncWrapper(async (req, res) => {
     name: user.name,
     username: user.username,
     email: user.email,
+    interests: user.interests,
   });
 });
 
