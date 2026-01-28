@@ -23,8 +23,6 @@ const AccountProfile = () => {
     }
   }, [loginUser, setFormData]);
 
-  console.log(loginUser);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
