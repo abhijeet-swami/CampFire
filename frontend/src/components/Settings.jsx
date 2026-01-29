@@ -6,6 +6,7 @@ import { MdOutlineLogout } from "react-icons/md";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
+import { BiCloudUpload } from "react-icons/bi";
 
 const Settings = () => {
   const { loading, setLoading, setLoginUser } = useContext(AuthContext);
@@ -62,6 +63,13 @@ const Settings = () => {
           className="flex items-center gap-2 px-2 py-2 hover:text-[#fafafa]"
         >
           <TiPointOfInterestOutline /> Add Interests
+        </Link>
+
+        <Link
+          to="/settings/upload-avatar"
+          className="flex items-center gap-2 px-2 py-2 hover:text-[#fafafa]"
+        >
+          <BiCloudUpload /> Upload Avatar
         </Link>
 
         <button
