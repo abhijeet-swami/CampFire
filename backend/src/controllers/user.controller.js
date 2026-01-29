@@ -92,7 +92,7 @@ const updateAvatar = asyncWrapper(async (req, res) => {
   if (oldAvatar.url) await deleteImage(oldAvatar.id);
 
   user.avatar = avatar;
-  user.save();
+  await user.save();
 
   const data = {
     url: user.avatar.url,

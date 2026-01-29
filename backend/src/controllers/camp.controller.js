@@ -141,9 +141,9 @@ const personalisedCamps = asyncWrapper(async (req, res) => {
   const userId = req.userId;
   const cursor = req.body?.cursor || null;
 
-  const user = await User.findById(userId).select("interests").lean();
+  const user = await User.findById(userId).select("interests camps").lean();
 
-  const baseQuery = {};
+  const baseQuery = { _id: { $nin: user.camps } };
 
   if (user.interests.length > 0) {
     baseQuery.category = { $in: user.interests };
