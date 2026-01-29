@@ -26,6 +26,16 @@ const campSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    thumbnail: {
+      id: {
+        type: String,
+        default: null,
+      },
+      url: {
+        type: String,
+        default: null,
+      },
+    },
     totalUsers: {
       type: Number,
       min: 1,

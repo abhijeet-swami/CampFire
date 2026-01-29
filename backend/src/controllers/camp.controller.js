@@ -6,6 +6,7 @@ import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
 import { normalizeTitle, findDuplicate } from "../utils/duplicateCamp.util.js";
 import addLog from "../utils/log.util.js";
+import { uploadImage } from "../services/cloudinary.service.js";
 
 const createCamp = asyncWrapper(async (req, res) => {
   const userId = req.userId;
@@ -20,12 +21,24 @@ const createCamp = asyncWrapper(async (req, res) => {
 
   const keywords = normalizeTitle(title);
 
+  let thumbnail = { id: null, url: null };
+  let thumbnailUploaded = true;
+  if (req.file) {
+    const uploaded = await uploadImage(req.file.path, "thumbnail");
+    thumbnail = {
+      id: uploaded.id,
+      url: uploaded.url,
+    };
+    if (!uploaded) thumbnailUploaded = false;
+  }
+
   const camp = await Camp.create({
     title,
     keywords,
     description,
     category,
     createdBy: userId,
+    thumbnail,
     burnAt: Date.now() + 72 * 60 * 60 * 1000,
   });
 
@@ -34,7 +47,11 @@ const createCamp = asyncWrapper(async (req, res) => {
   });
   addLog(camp._id, "User");
 
-  return sendResponse(res, 201, "Camp created successfully", camp);
+  const message = thumbnailUploaded
+    ? "Camp created successfully."
+    : "Camp created successfully, but the thumbnail upload failed.";
+
+  return sendResponse(res, 201, message, camp);
 });
 
 const joinCamp = asyncWrapper(async (req, res) => {
@@ -72,6 +89,22 @@ const joinCamp = asyncWrapper(async (req, res) => {
   addLog(camp._id, "User");
 
   sendResponse(res, 201, "You joinned the Camp", data);
+});
+
+const leaveCamp = asyncWrapper(async (req, res) => {
+  const { campId } = req.body;
+  if (!campId) throw new ApiError("campId is required", 400);
+
+  const user = await User.findById(req.userId).select("camps");
+  if (!user) throw new ApiError("User not found", 404);
+
+  const isInCamp = user.camps.some((id) => id.toString() === campId);
+  if (!isInCamp) throw new ApiError("User is not part of this camp", 409);
+
+  user.camps.pull(campId);
+  await user.save();
+
+  sendResponse(res, 200, "Successfully left the camp", { campId });
 });
 
 const fetchCamps = async ({
@@ -192,6 +225,7 @@ const myCamps = asyncWrapper(async (req, res) => {
 export {
   createCamp,
   joinCamp,
+  leaveCamp,
   trendingCamps,
   topCamps,
   personalisedCamps,
