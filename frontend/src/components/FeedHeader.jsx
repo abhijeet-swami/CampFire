@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext, CampContext } from "../context/authContext";
 import { handleError } from "../notify/Notification";
 import { useParams } from "react-router-dom";
