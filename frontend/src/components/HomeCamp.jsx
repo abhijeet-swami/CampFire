@@ -61,7 +61,9 @@ const HomeCamp = () => {
       {personalisedCamps.map((camp) => (
         <div
           key={camp._id}
-          onClick={() => navigate("/camp-feed")}
+          onClick={() => {
+            navigate(`/camp-feed/${camp._id}`);
+          }}
           className="flex mx-auto justify-between gap-4
                  bg-gradient-to-b from-[#0f0f11] to-[#0b0b0d]
                  border border-[#1f1f23] rounded-2xl p-5
@@ -95,7 +97,7 @@ const HomeCamp = () => {
                 <span>{camp.totalUsers}</span>
               </div>
 
-              <button className="px-4 py-1.5 text-sm rounded-lg bg-orange-500 text-black font-bold hover:bg-orange-400 transition shrink-0">
+              <button className="px-4 py-1.5 text-sm rounded-lg bg-orange-400 text-black font-bold hover:bg-orange-500 transition shrink-0">
                 Join
               </button>
             </div>
