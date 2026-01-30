@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import errorMiddleware from "./middlewares/error.middleware.js";
+import rateLimit from "./middlewares/rateLimit.middleware.js";
 
 import authRouter from "./routes/auth.route.js";
 import campRoutes from "./routes/camp.route.js";
@@ -21,11 +22,11 @@ app.use(
 app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
 
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/camp", campRoutes);
-app.use("/api/v1/post", postRoutes);
-app.use("/api/v1/message", messageRoutes);
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/auth", rateLimit, authRouter);
+app.use("/api/v1/camp", rateLimit, campRoutes);
+app.use("/api/v1/post", rateLimit, postRoutes);
+app.use("/api/v1/message", rateLimit, messageRoutes);
+app.use("/api/v1/user", rateLimit, userRoutes);
 
 app.use(errorMiddleware);
 
