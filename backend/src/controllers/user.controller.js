@@ -112,7 +112,7 @@ const removeAvatar = asyncWrapper(async (req, res) => {
   await user.save();
 
   const data = {
-    url: user.url,
+    url: user.avatar.url,
   };
 
   sendResponse(res, 200, "Avatar removed successfully", data);
