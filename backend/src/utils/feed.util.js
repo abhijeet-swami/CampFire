@@ -1,6 +1,7 @@
 import Camp from "../models/camp.model.js";
 import Log from "../models/log.model.js";
 import cron from "node-cron";
+import { changeCacheVersion } from "./cache.util.js";
 
 const scoreTrendingCamp = async (query, limit = 500) => {
   try {
@@ -101,16 +102,30 @@ const updateTopScores = () =>
     timeDivisor: 1000 * 60 * 60 * 24,
   });
 
-const updateTrending = () => {
-  updateTrendingScores();
-  updateTopScores();
+const updateTrending = async () => {
+  try {
+    await updateTrendingScores();
+    await updateTopScores();
+  } catch (error) {
+    console.log("Initial update failed:", error.message);
+  }
 
-  cron.schedule("0 * * * *", () => {
-    updateTrendingScores();
+  cron.schedule("*/5 * * * *", async () => {
+    try {
+      await updateTrendingScores();
+      await changeCacheVersion("trendingCamps");
+    } catch (error) {
+      console.log("Trending cron failed:", error.message);
+    }
   });
 
-  cron.schedule("0 */6 * * *", () => {
-    updateTopScores();
+  cron.schedule("0 */6 * * *", async () => {
+    try {
+      await updateTopScores();
+      await changeCacheVersion("topCamps");
+    } catch (error) {
+      console.log("Top cron failed:", error.message);
+    }
   });
 };
 

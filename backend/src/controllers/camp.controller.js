@@ -7,6 +7,7 @@ import sendResponse from "../utils/sendResponse.util.js";
 import { normalizeTitle, findDuplicate } from "../utils/duplicateCamp.util.js";
 import addLog from "../utils/log.util.js";
 import { uploadImage } from "../services/cloudinary.service.js";
+import { setCache, getCache } from "../utils/cache.util.js";
 
 const createCamp = asyncWrapper(async (req, res) => {
   const userId = req.userId;
@@ -157,20 +158,38 @@ const fetchCamps = async ({
 };
 
 const trendingCamps = asyncWrapper(async (req, res) => {
+  const keyId = req.body?.cursor || "none";
+  const cache = await getCache("trendingCamps", keyId);
+  if (cache) {
+    return sendResponse(res, 200, "Trending Camps", cache);
+  }
+
   const { camps, cursor } = await fetchCamps({
     field: "trendingScore",
     limit: 10,
     cursor: req.body?.cursor,
   });
+
+  await setCache("trendingCamps", camps, cursor, keyId);
+
   sendResponse(res, 200, "Trending Camps", { camps, cursor });
 });
 
 const topCamps = asyncWrapper(async (req, res) => {
+  const keyId = req.body?.cursor || "none";
+  const cache = await getCache("topCamps", keyId);
+  if (cache) {
+    return sendResponse(res, 200, "Top Camps", cache);
+  }
+
   const { camps, cursor } = await fetchCamps({
     field: "topScore",
     limit: 10,
     cursor: req.body?.cursor,
   });
+
+  await setCache("topCamps", camps, cursor, keyId);
+
   sendResponse(res, 200, "Top Camps", { camps, cursor });
 });
 
