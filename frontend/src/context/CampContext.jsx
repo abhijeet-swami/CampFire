@@ -5,7 +5,7 @@ export const CampContextProvider = ({ children }) => {
   const [campForm, setCampForm] = useState({
     title: "",
     description: "",
-    category: "",
+    category: [],
   });
 
   const [yourCamps, setYourCamps] = useState([]);
@@ -15,6 +15,12 @@ export const CampContextProvider = ({ children }) => {
   const [personalisedCamps, setPpersonalisedCamps] = useState([]);
 
   const [camp, setCamp] = useState(null);
+
+  const [open, setOpen] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [content, setContent] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
   return (
     <CampContext.Provider
@@ -33,6 +39,16 @@ export const CampContextProvider = ({ children }) => {
         setPpersonalisedCamps,
         camp,
         setCamp,
+        open,
+        setOpen,
+        posts,
+        setPosts,
+        content,
+        setContent,
+        imagePreview,
+        setImagePreview,
+        imageFile,
+        setImageFile,
       }}
     >
       {children}
