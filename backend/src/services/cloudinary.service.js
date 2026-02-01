@@ -42,11 +42,12 @@ const getUploadOptions = (type) => {
         use_filename: true,
         unique_filename: false,
         overwrite: true,
+        resource_type: "auto",
 
         transformation: [
           {
             width: 1080,
-            height: 1080,
+            height: 1350,
             crop: "limit",
           },
           {
