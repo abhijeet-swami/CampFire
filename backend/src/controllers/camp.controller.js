@@ -2,6 +2,7 @@ import asyncWrapper from "../utils/asyncWrapper.util.js";
 import Camp from "../models/camp.model.js";
 import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
+import Log from "../models/log.model.js";
 import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
 import { normalizeTitle, findDuplicate } from "../utils/duplicateCamp.util.js";
@@ -112,6 +113,8 @@ const leaveCamp = asyncWrapper(async (req, res) => {
   await adjustUserCount(camp._id, camp.totalUsers, -1);
   camp.totalUsers -= 1;
   await camp.save();
+
+  await Log.findOneAndDelete({ campId: camp._id, log: "User" });
 
   sendResponse(res, 200, "Successfully left the camp", { campId });
 });
