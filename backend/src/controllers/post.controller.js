@@ -42,7 +42,7 @@ const createPost = asyncWrapper(async (req, res) => {
   const image = req?.file;
   const images = [];
   if (image) {
-    const uploaded = await uploadImage(images.path, "post");
+    const uploaded = await uploadImage(image.path, "post");
     if (uploaded) {
       images.push({ id: uploaded.id, url: uploaded.url });
     }
