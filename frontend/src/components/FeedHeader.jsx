@@ -1,14 +1,15 @@
 import { useContext, useEffect } from "react";
 import { AuthContext, CampContext } from "../context/authContext";
-import { handleError } from "../notify/Notification";
-import { useParams } from "react-router-dom";
+import { handleError, handleSuccess } from "../notify/Notification";
 import { FaUserGroup } from "react-icons/fa6";
+import { useParams } from "react-router-dom";
 
 const FeedHeader = () => {
   const { id } = useParams();
 
   const { setLoading } = useContext(AuthContext);
-  const { camp, setCamp, setPosts } = useContext(CampContext);
+  const { camp, setCamp, setPosts, joinCamps, setJoinCamps, setYourCamps } =
+    useContext(CampContext);
 
   useEffect(() => {
     setCamp(null);
@@ -37,6 +38,38 @@ const FeedHeader = () => {
     fetchGetCamps();
   }, [id, setLoading, setCamp, setPosts]);
 
+  const handleJoinCamp = async (id) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/join/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(),
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess(result.message);
+        const normalizedCamp = {
+          ...camp,
+        };
+
+        setJoinCamps((prev) => [...prev, normalizedCamp]);
+        setYourCamps((prev) => [...prev, normalizedCamp]);
+      } else {
+        handleError(result.message);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const isJoined = (campId) =>
+    Array.isArray(joinCamps) && joinCamps.some((c) => c._id === campId);
   return (
     <header className="sticky top-0 z-20 bg-[#111113] border border-[#1f1f23] m-2 px-4 py-4 md:px-6 rounded-lg">
       <div className="max-w-3xl mx-auto flex flex-row sm:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
@@ -57,10 +90,16 @@ const FeedHeader = () => {
 
         <div className="flex-shrink-0 mt-2 md:mt-0">
           <button
-            className={`px-4 py-1.5 text-sm rounded-lg font-semibold transition bg-orange-400 text-black hover:bg-orange-500
-            `}
+            onClick={() => {
+              if (!isJoined(camp._id)) {
+                handleJoinCamp(camp._id);
+              }
+            }}
+            className={`px-4 py-1.5 text-sm rounded-lg font-bold bg-orange-400 text-black transition shrink-0
+                 ${isJoined(camp?._id) ? "cursor-not-allowed" : "hover:bg-orange-500"}
+               `}
           >
-            Join
+            {isJoined(camp?._id) ? "Joined" : "Join"}
           </button>
         </div>
       </div>
