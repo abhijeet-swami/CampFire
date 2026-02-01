@@ -6,16 +6,16 @@ import { handleError, handleSuccess } from "../notify/Notification";
 import { useNavigate } from "react-router-dom";
 
 const INTERESTS = [
-  "Tech",
-  "Art",
-  "News",
-  "Sports",
-  "Nature",
-  "Photography",
-  "Music",
-  "Gaming",
-  "Education",
-  "Startup",
+  "tech",
+  "art",
+  "news",
+  "sports",
+  "nature",
+  "photography",
+  "music",
+  "gaming",
+  "education",
+  "startup",
 ];
 const AddInterests = () => {
   const navigate = useNavigate();

@@ -6,16 +6,16 @@ import { useNavigate } from "react-router-dom";
 const CreateCamp = () => {
   const navigate = useNavigate();
   const categories = [
-    "Tech",
-    "Art",
-    "News",
-    "Sports",
-    "Nature",
-    "Photography",
-    "Music",
-    "Gaming",
-    "Educaton",
-    "Startup",
+    "tech",
+    "art",
+    "news",
+    "sports",
+    "nature",
+    "photography",
+    "music",
+    "gaming",
+    "education",
+    "startup",
   ];
 
   const { loading, setLoading } = useContext(AuthContext);
