@@ -1,14 +1,55 @@
 import { useContext, useState } from "react";
 import { FiMoreHorizontal } from "react-icons/fi";
-import { Link } from "react-router-dom";
 import { AuthContext, CampContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 
 const PostCard = ({ post }) => {
   const [active, setActive] = useState(false);
-
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(post.content);
   const { loading, setLoading } = useContext(AuthContext);
   const { posts, setPosts } = useContext(CampContext);
+
+  const handleEditPost = async () => {
+    if (!editedContent.trim()) {
+      handleError("Content cannot be empty");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/edit/${post._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: editedContent,
+          }),
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess(result.message);
+        setPosts((prev) =>
+          prev.map((p) =>
+            p._id === post._id ? { ...p, content: result.data.content } : p,
+          ),
+        );
+        setIsEditing(false);
+        setActive(false);
+      } else {
+        handleError(result.message);
+      }
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDeletePost = async () => {
     try {
@@ -65,13 +106,20 @@ const PostCard = ({ post }) => {
           {active && (
             <div className="absolute right-0 mt-2 w-40 bg-[#1f1f23] rounded-md shadow-lg z-50">
               <div className="px-2 py-2 space-y-1">
-                <Link className="text-white hover:bg-orange-400 hover:text-black block px-3 py-2 rounded-md text-base font-medium">
+                <button
+                  onClick={() => {
+                    setActive(false);
+                    setIsEditing(!isEditing);
+                  }}
+                  disabled={loading}
+                  className={`text-white w-full hover:bg-orange-400 hover:text-black block px-3 py-2 rounded-md text-base font-medium ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                >
                   Edit Post
-                </Link>
+                </button>
                 <button
                   onClick={handleDeletePost}
                   disabled={loading}
-                  className={`text-white hover:bg-orange-400 hover:text-black block px-3 py-2 rounded-md text-base font-medium ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`text-white w-full hover:bg-orange-400 hover:text-black block px-3 py-2 rounded-md text-base font-medium ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   Delete Post
                 </button>
@@ -81,9 +129,40 @@ const PostCard = ({ post }) => {
         </div>
       </div>
 
-      <p className="text-sm sm:text-[15px] leading-relaxed mb-3 whitespace-pre-wrap break-words">
-        {post.content}
-      </p>
+      {isEditing ? (
+        <div className="mb-3 space-y-2">
+          <textarea
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            rows={3}
+            className="w-full resize-none rounded-lg outline-none bg-[#18181b] border border-[#1f1f23] p-3 text-sm"
+          />
+
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                setEditedContent(post.content);
+              }}
+              className="px-4 py-1.5 rounded-lg bg-gray-600 text-white text-sm"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleEditPost}
+              disabled={loading}
+              className="px-4 py-1.5 rounded-lg bg-orange-400 text-black text-sm font-semibold hover:bg-orange-500 disabled:opacity-50"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p className="text-sm sm:text-[15px] leading-relaxed mb-3 whitespace-pre-wrap break-words">
+          {post.content}
+        </p>
+      )}
 
       {post.images?.length > 0 && (
         <img
