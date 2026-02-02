@@ -1,7 +1,7 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext, CampContext } from "../context/authContext";
 import { FaUserGroup } from "react-icons/fa6";
-import { handleError } from "../notify/Notification";
+import { handleError, handleSuccess } from "../notify/Notification";
 import { FaRegClock } from "react-icons/fa";
 import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
@@ -9,31 +9,37 @@ import { useNavigate } from "react-router-dom";
 const YourCamp = () => {
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(AuthContext);
-  const { yourCamps, setYourCamps } = useContext(CampContext);
+  const { yourCamps, setYourCamps, setJoinCamps } = useContext(CampContext);
 
-  useEffect(() => {
-    const fetchCamps = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/my-camps`,
-          {
-            method: "GET",
-            credentials: "include",
+  const handleLeaveCamp = async (id) => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/leave/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
-
-        const result = await response.json();
-        setYourCamps(result.data.camps);
-      } catch (error) {
-        handleError(error);
-      } finally {
-        setLoading(false);
+          body: JSON.stringify(),
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess(result.message);
+        setYourCamps((prev) => prev.filter((camp) => camp._id !== id));
+        setJoinCamps((prev) => prev.filter((camp) => camp._id !== id));
+      } else {
+        handleError(result.error);
       }
-    };
-
-    fetchCamps();
-  }, [setLoading, setYourCamps]);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <Loader />;
@@ -101,9 +107,22 @@ const YourCamp = () => {
             {camp.description}
           </p>
 
-          <div className="flex items-center gap-2 text-xs text-gray-400 mt-4">
-            <FaUserGroup />
-            <span>{camp.totalUsers}</span>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs text-gray-400">
+              <FaUserGroup />
+              <span>{camp.totalUsers}</span>
+            </div>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLeaveCamp(camp._id);
+              }}
+              disabled={loading}
+              className={`px-4 py-1.5 text-sm rounded-lg font-bold bg-orange-400 text-black transition shrink-0 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              Leave Camp
+            </button>
           </div>
         </div>
       ))}

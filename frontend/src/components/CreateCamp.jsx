@@ -19,7 +19,7 @@ const CreateCamp = () => {
   ];
 
   const { loading, setLoading } = useContext(AuthContext);
-  const { campForm, setCampForm } = useContext(CampContext);
+  const { campForm, setCampForm, setYourCamps } = useContext(CampContext);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,12 +69,13 @@ const CreateCamp = () => {
           credentials: "include",
         },
       );
-      const data = await response.json();
-      if (data.success) {
-        handleSuccess(data.message);
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess(result.message);
+        setYourCamps((prev) => [...prev, result.data]);
         setTimeout(() => navigate("/your-camps"), 2000);
       } else {
-        handleError(data.message);
+        handleError(result.message);
       }
       setCampForm({
         title: "",
