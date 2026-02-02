@@ -54,6 +54,10 @@ const PostCard = ({ post, messagesByPost, campId }) => {
   };
 
   const deleteMessage = (messageId) => {
+    setMessagesByPost((prev) => ({
+      ...prev,
+      [post._id]: prev[post._id]?.filter((msg) => msg._id !== messageId),
+    }));
     socket.emit("delete-message", { messageId });
   };
 
