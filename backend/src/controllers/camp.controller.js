@@ -247,7 +247,7 @@ const personalisedCamps = asyncWrapper(async (req, res) => {
 const myCamps = asyncWrapper(async (req, res) => {
   const camps = await User.findById(req.userId)
     .select("camps")
-    .populate("camps", "title description burnAt totalUsers category");
+    .populate("camps", "title description burnAt totalUsers category createdBy");
 
   sendResponse(res, 200, "Camps fetched", camps);
 });
