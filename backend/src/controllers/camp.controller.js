@@ -109,11 +109,16 @@ const leaveCamp = asyncWrapper(async (req, res) => {
   user.camps.pull(campId);
   await user.save();
 
-  const camp = await Camp.findById(campId).select("totalUsers");
-  await adjustUserCount(camp._id, camp.totalUsers, -1);
-  camp.totalUsers -= 1;
-  await camp.save();
+  const camp = await Camp.findOneAndUpdate(
+    { _id: campId, totalUsers: { $gt: 0 } },
+    { $inc: { totalUsers: -1 } },
+    { new: false, select: "totalUsers" },
+  );
+  if (!camp) {
+    throw new Error("Camp not found or user count already zero");
+  }
 
+  await adjustUserCount(camp._id, camp.totalUsers, -1);
   await Log.findOneAndDelete({ campId: camp._id, log: "User" });
 
   sendResponse(res, 200, "Successfully left the camp", { campId });
