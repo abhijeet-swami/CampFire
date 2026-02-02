@@ -26,7 +26,7 @@ export const CampContextProvider = ({ children }) => {
   const { setLoading } = useContext(AuthContext);
 
   useEffect(() => {
-    const hydrateJoinedCamps = async () => {
+    const fetchYourCamps = async () => {
       try {
         setLoading(true);
         const res = await fetch(
@@ -34,9 +34,10 @@ export const CampContextProvider = ({ children }) => {
           { credentials: "include" },
         );
         const result = await res.json();
+
         if (result.success) {
-          setJoinCamps(result.data.camps);
           setYourCamps(result.data.camps);
+          setJoinCamps(result.data.camps);
         }
       } catch (err) {
         handleError(err);
@@ -45,7 +46,7 @@ export const CampContextProvider = ({ children }) => {
       }
     };
 
-    hydrateJoinedCamps();
+    fetchYourCamps();
   }, [setLoading]);
 
   return (
