@@ -10,6 +10,7 @@ const YourCamp = () => {
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(AuthContext);
   const { yourCamps, setYourCamps, setJoinCamps } = useContext(CampContext);
+  const { loginUser } = useContext(AuthContext);
 
   const handleLeaveCamp = async (id) => {
     try {
@@ -113,16 +114,20 @@ const YourCamp = () => {
               <span>{camp.totalUsers}</span>
             </div>
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLeaveCamp(camp._id);
-              }}
-              disabled={loading}
-              className={`px-4 py-1.5 text-sm rounded-lg font-bold bg-orange-400 text-black transition shrink-0 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              Leave Camp
-            </button>
+            {camp.createdBy !== loginUser._id && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLeaveCamp(camp._id);
+                }}
+                disabled={loading}
+                className={`px-4 py-1.5 text-sm rounded-lg font-bold bg-orange-400 text-black transition shrink-0 ${
+                  loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                Leave Camp
+              </button>
+            )}
           </div>
         </div>
       ))}

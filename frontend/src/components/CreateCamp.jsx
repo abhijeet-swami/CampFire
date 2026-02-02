@@ -19,7 +19,8 @@ const CreateCamp = () => {
   ];
 
   const { loading, setLoading } = useContext(AuthContext);
-  const { campForm, setCampForm, setYourCamps } = useContext(CampContext);
+  const { campForm, setCampForm, setYourCamps, setJoinCamps } =
+    useContext(CampContext);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,6 +74,7 @@ const CreateCamp = () => {
       if (result.success) {
         handleSuccess(result.message);
         setYourCamps((prev) => [...prev, result.data]);
+        setJoinCamps((prev) => [...prev, result.data]);
         setTimeout(() => navigate("/your-camps"), 2000);
       } else {
         handleError(result.message);
