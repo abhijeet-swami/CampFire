@@ -21,16 +21,10 @@ const CampFeed = () => {
     });
 
     socket.on("message", ({ message }) => {
-      setMessagesByPost((prev) => {
-        const msgs = prev[message.postId] || [];
-
-        const filtered = msgs.filter((m) => m.tempId !== message.tempId);
-
-        return {
-          ...prev,
-          [message.postId]: [...filtered, message],
-        };
-      });
+      setMessagesByPost((prev) => ({
+        ...prev,
+        [message.postId]: [...(prev[message.postId] || []), message],
+      }));
     });
 
     socket.on("edit-message", ({ update }) => {

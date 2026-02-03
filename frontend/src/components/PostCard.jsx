@@ -10,7 +10,7 @@ const PostCard = ({ post, messagesByPost, campId }) => {
   const [active, setActive] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
-  const { loginUser, loading, setLoading } = useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
   const [messagesLoading, setMessagesLoading] = useState(false);
 
   const { posts, setPosts, setCursor, me, setMe, setMessagesByPost } =
@@ -68,27 +68,12 @@ const PostCard = ({ post, messagesByPost, campId }) => {
   };
 
   const sendMessage = (text) => {
-    const tempId = Date.now();
-    const tempMessage = {
-      _id: Date.now(),
-      content: text,
-      userId: { _id: me, username: loginUser?.username || "you" },
-      postId: post._id,
-      pending: true,
-      createdAt: new Date().toISOString(),
-      tempId,
-    };
-
-    setMessagesByPost((prev) => ({
-      ...prev,
-      [post._id]: [...(prev[post._id] || []), tempMessage],
-    }));
+    if (!text.trim()) return;
 
     socket.emit("message", {
       campId,
       postId: post._id,
       text,
-      tempId,
     });
   };
 
