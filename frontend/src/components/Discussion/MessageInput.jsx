@@ -9,8 +9,8 @@ const MessageInput = ({ onSend }) => {
     setText("");
   };
   return (
-    <div className="fixed left-0 bottom-0 sm:left-auto z-10 w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl border-t border-[#1f1f23] bg-[#0f0f11] rounded-lg">
-      <div className="mx-auto flex max-w-3xl items-end gap-2 px-3 py-3 sm:px-4">
+    <div className="fixed left-0 bottom-0 sm:left-auto z-10 w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl bg-[#0f0f11] border-t border-[#1f1f23] rounded-lg">
+      <div className="flex max-w-3xl gap-2 px-3 py-3 sm:px-4">
         <input
           type="text"
           value={text}
