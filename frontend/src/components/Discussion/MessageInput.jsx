@@ -10,7 +10,6 @@ const MessageInput = ({ onSend }) => {
     setText("");
   };
 
-  // Auto-grow textarea WITHOUT internal scrolling
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;

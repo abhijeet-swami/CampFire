@@ -10,14 +10,6 @@ const Sidebar = () => {
 
   const isActive = (path) =>
     pathname === path || pathname.startsWith(path + "/");
-
-  /**
-   * IMPORTANT:
-   * Hide mobile bottom nav on discussion/chat pages
-   * so MessageInput can own the bottom.
-   *
-   * Adjust this condition ONLY if your route changes.
-   */
   const isDiscussionPage =
     pathname.includes("/discussion") ||
     pathname.includes("/post/") ||

@@ -1,9 +1,8 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { MdEdit } from "react-icons/md";
-import { Link } from "react-router-dom";
 
 const AccountProfile = () => {
   const navigate = useNavigate();
@@ -73,7 +72,14 @@ const AccountProfile = () => {
   };
 
   return (
-    <div className="px-4 py-6 max-w-3xl mx-auto">
+    /* 👇 EXTRA BOTTOM SPACE FOR MOBILE NAV */
+    <div
+      className="
+        px-4 py-6 max-w-3xl mx-auto
+        pb-[calc(96px+env(safe-area-inset-bottom))]
+        md:pb-6
+      "
+    >
       {/* HEADER */}
       <div className="flex flex-col items-center text-center mb-8">
         <div className="relative">
@@ -150,7 +156,7 @@ const AccountProfile = () => {
             </div>
           </div>
 
-          {/* EMAIL (READ ONLY) */}
+          {/* EMAIL */}
           <div>
             <label className="block text-sm font-semibold text-text-primary mb-1">
               Email
@@ -201,11 +207,11 @@ const AccountProfile = () => {
                 navigate(-1);
               }}
               className="
-    px-6 py-2.5 rounded-xl
-    border border-border
-    text-text-primary
-    hover:bg-bg transition
-  "
+                px-6 py-2.5 rounded-xl
+                border border-border
+                text-text-primary
+                hover:bg-bg transition
+              "
             >
               Cancel
             </button>

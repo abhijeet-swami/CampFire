@@ -4,10 +4,10 @@ import { handleError, handleSuccess } from "../notify/Notification";
 import { FaUserGroup } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
 
-const formatRemainingTime = (burnIn) => {
-  if (!burnIn) return null;
+const getRemainingTime = (burnAt) => {
+  if (!burnAt) return null;
 
-  const diff = burnIn - Date.now();
+  const diff = new Date(burnAt) - Date.now();
   if (diff <= 0) return "Expired";
 
   const minutes = Math.floor(diff / 60000);
@@ -79,7 +79,7 @@ const FeedHeader = () => {
   const isJoined =
     Array.isArray(joinCamps) && joinCamps.some((c) => c._id === camp?._id);
 
-  const remainingTime = formatRemainingTime(camp?.burnAt);
+  const remainingTime = getRemainingTime(camp?.burnAt);
 
   return (
     <section className="bg-bg">
@@ -142,7 +142,7 @@ const FeedHeader = () => {
               >
                 {remainingTime === "Expired"
                   ? "Camp expired"
-                  : `Ends in ${remainingTime}`}
+                  : `Burns in ${remainingTime}`}
               </span>
             )}
           </div>
