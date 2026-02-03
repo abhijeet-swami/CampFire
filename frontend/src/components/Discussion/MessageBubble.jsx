@@ -2,8 +2,8 @@ import { FiEdit2, FiTrash2, FiCheck, FiX } from "react-icons/fi";
 import { useState } from "react";
 
 const MessageBubble = ({ message, isMine, onEdit, onDelete }) => {
-  const [open, setOpen] = useState(false); // controls dropdown visibility
-  const [isEditing, setIsEditing] = useState(false); // controls inline edit
+  const [open, setOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(message.content);
 
   const handleSave = () => {
@@ -12,7 +12,7 @@ const MessageBubble = ({ message, isMine, onEdit, onDelete }) => {
       setEditedText(message.content);
       return;
     }
-    onEdit({ ...message, content: editedText }); // send updated message to parent
+    onEdit({ ...message, content: editedText });
     setIsEditing(false);
   };
 
