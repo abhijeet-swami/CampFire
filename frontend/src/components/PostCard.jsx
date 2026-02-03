@@ -1,83 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { FiMoreHorizontal } from "react-icons/fi";
-import { AuthContext, CampContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
-import { socket } from "../utils/socket.js";
-import MessageList from "../components/Discussion/MessageList.jsx";
-import MessageInput from "../components/Discussion/MessageInput.jsx";
+import { useNavigate } from "react-router-dom";
+import { AuthContext, CampContext } from "../context/authContext";
 
-const PostCard = ({ post, messagesByPost, campId }) => {
+const PostCard = ({ post, campId }) => {
+  const navigate = useNavigate();
   const [active, setActive] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
   const { loading, setLoading } = useContext(AuthContext);
-  const [messagesLoading, setMessagesLoading] = useState(false);
 
-  const { posts, setPosts, setCursor, me, setMe, setMessagesByPost } =
-    useContext(CampContext);
+  const { posts, setPosts } = useContext(CampContext);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        setMessagesLoading(true);
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}/api/v1/message/get/${post._id}`,
-          { method: "GET", credentials: "include" },
-        );
-        const result = await response.json();
-
-        const sortedMessages = (result.data.messages || []).sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-        );
-        setMessagesByPost((prev) => ({
-          ...prev,
-          [post._id]: sortedMessages,
-        }));
-
-        setCursor(result.data.cursor || null);
-        setMe(result.data.me);
-      } catch (error) {
-        handleError(error);
-      } finally {
-        setMessagesLoading(false);
-      }
-    };
-
-    fetchMessages();
-  }, [setMessagesLoading, post._id, setCursor, setMe, setMessagesByPost]);
-
-  const editMessage = (message) => {
-    socket.emit("edit-message", {
-      messageId: message._id,
-      text: message.content,
-    });
-    setMessagesByPost((prev) => ({
-      ...prev,
-      [message.postId]: prev[message.postId]?.map((m) =>
-        m._id === message._id ? { ...m, content: message.content } : m,
-      ),
-    }));
-  };
-
-  const deleteMessage = (messageId) => {
-    setMessagesByPost((prev) => ({
-      ...prev,
-      [post._id]: prev[post._id]?.filter((msg) => msg._id !== messageId),
-    }));
-    socket.emit("delete-message", { messageId });
-  };
-
-  const sendMessage = (text) => {
-    if (!text.trim()) return;
-
-    socket.emit("message", {
-      campId,
-      postId: post._id,
-      text,
-    });
-  };
-
-  // handleEditPost
   const handleEditPost = async () => {
     if (!editedContent.trim()) {
       handleError("Content cannot be empty");
@@ -119,7 +54,6 @@ const PostCard = ({ post, messagesByPost, campId }) => {
     }
   };
 
-  // handleDeletePost
   const handleDeletePost = async () => {
     try {
       setLoading(true);
@@ -146,10 +80,7 @@ const PostCard = ({ post, messagesByPost, campId }) => {
 
   return (
     <>
-      <article
-        className="w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl bg-[#0f0f11] border border-[#1f1f23] rounded-xl p-3 sm:p-4  md:p-5mx-auto
-      "
-      >
+      <article className="w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl bg-[#0f0f11] border border-[#1f1f23] rounded-lg p-3 sm:p-4 md:p-5 mx-auto">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-400 text-black flex items-center justify-center font-semibold shrink-0">
@@ -238,24 +169,21 @@ const PostCard = ({ post, messagesByPost, campId }) => {
           <img
             src={post.images[0].url}
             alt="post"
-            className="w-full md:max-w-96 mx-auto max-h-64 sm:max-h-64 md:max-h-80 object-center rounded-lg mb-3"
+            className="w-full md:max-w-96 mx-auto max-h-64 sm:max-h-64 md:max-h-80 object-center rounded-lg mb-5"
           />
         )}
 
-        <div className="text-xs text-[#a3a3a3]">
+        <div className="flex justify-between text-sm text-[#a3a3a3]">
           {new Date(post.createdAt).toLocaleString()}
-        </div>
 
-        <div className="relative w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl">
-          <MessageList
-            messagesByPost={messagesByPost}
-            me={me}
-            messagesLoading={messagesLoading}
-            onEdit={editMessage}
-            onDelete={deleteMessage}
-          />
-
-          <MessageInput onSend={sendMessage} />
+          <div>
+            <button
+              onClick={() => navigate(`/camp-feed/${campId}/post/${post._id}`)}
+              className="w-full flex items-center justify-between text-[#a3a3a3] hover:text-white transition"
+            >
+              Open discussion
+            </button>
+          </div>
         </div>
       </article>
     </>
