@@ -3,6 +3,7 @@ import Camp from "../models/camp.model.js";
 import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
 import Message from "../models/message.model.js";
+import { changeCacheVersion } from "../utils/cache.util.js";
 
 const burnCamps = async () => {
   try {
@@ -27,6 +28,8 @@ const burnCamps = async () => {
       Post.deleteMany({ campId: { $in: ids } }),
       Message.deleteMany({ campId: { $in: ids } }),
       Camp.deleteMany({ _id: { $in: ids } }),
+      changeCacheVersion("trendingCamps"),
+      changeCacheVersion("topCamps"),
     ]);
   } catch (error) {
     console.log(error.message);
@@ -34,6 +37,7 @@ const burnCamps = async () => {
 };
 
 const startBurning = () => {
+  burnCamps();
   cron.schedule("*/5 * * * *", burnCamps);
 };
 
