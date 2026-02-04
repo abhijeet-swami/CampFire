@@ -66,7 +66,7 @@ const YourCamp = () => {
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 px-1 sm:px-2">
-      {yourCamps.map((camp, i) => {
+      {yourCamps.map((camp) => {
         const remainingTime = getRemainingTime(camp.burnAt);
 
         return (
