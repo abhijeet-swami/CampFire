@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext, CampContext } from "./authContext";
+import { useEffect, useState } from "react";
+import { CampContext } from "./authContext";
 import { handleError } from "../notify/Notification";
 
 export const CampContextProvider = ({ children }) => {
@@ -23,8 +23,6 @@ export const CampContextProvider = ({ children }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
-  const { setLoading } = useContext(AuthContext);
-
   const [messagesByPost, setMessagesByPost] = useState({});
 
   const [cursor, setCursor] = useState(null);
@@ -33,26 +31,26 @@ export const CampContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchYourCamps = async () => {
       try {
-        setLoading(true);
         const res = await fetch(
           `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/my-camps`,
           { credentials: "include" },
         );
         const result = await res.json();
-
+        if (res.status === 401) {
+          setYourCamps([]);
+          return;
+        }
         if (result.success) {
           setYourCamps(result.data.camps);
           setJoinCamps(result.data.camps);
         }
       } catch (err) {
         handleError(err);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchYourCamps();
-  }, [setLoading]);
+  }, []);
 
   return (
     <CampContext.Provider
