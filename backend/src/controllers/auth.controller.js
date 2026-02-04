@@ -25,6 +25,7 @@ const register = asyncWrapper(async (req, res) => {
   res.cookie("token", code, {
     httpOnly: true,
     sameSite: "none",
+    secure: true,
     maxAge: 10 * 60 * 1000,
   });
   sendResponse(res, 200, "Otp sent");
@@ -65,6 +66,7 @@ const verifyCode = asyncWrapper(async (req, res) => {
   const token = genrateToken(user._id);
   res.clearCookie("token").cookie("uid", token, {
     httpOnly: true,
+    secure: true,
     sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -94,6 +96,7 @@ const resendCode = asyncWrapper(async (req, res) => {
 
   res.cookie("token", newToken, {
     httpOnly: true,
+    secure: true,
     sameSite: "none",
     maxAge: 10 * 60 * 1000,
   });
@@ -130,6 +133,7 @@ const login = asyncWrapper(async (req, res) => {
 
   res.cookie("uid", token, {
     httpOnly: true,
+    secure: true,
     sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -157,6 +161,7 @@ const forgotPassword = asyncWrapper(async (req, res) => {
 
   res.cookie("token", newToken, {
     httpOnly: true,
+    secure: true,
     sameSite: "none",
     maxAge: 10 * 60 * 1000,
   });
@@ -167,6 +172,7 @@ const forgotPassword = asyncWrapper(async (req, res) => {
 const logout = asyncWrapper(async (req, res) => {
   res.clearCookie("uid", {
     httpOnly: true,
+    secure: true,
     sameSite: "strict",
   });
 
