@@ -37,9 +37,11 @@ const authCode = async (rawToken, code) => {
 
 const sendCode = async (to, user_id, forWhat = "verify") => {
   const code = Math.floor(100000 + Math.random() * 900000);
+  console.log(code);
   const { rawHash, tokenHash } = generateHash();
   const expiresAt = Date.now() + 10 * 60 * 1000;
 
+  console.log(123);
   const newCode = new Code({
     code,
     user_id,
@@ -48,9 +50,11 @@ const sendCode = async (to, user_id, forWhat = "verify") => {
     expiresAt,
     tokenHash,
   });
+  console.log(newCode);
   await newCode.save();
 
   try {
+    console.log(234);
     await sendMail(to, code);
   } catch {
     throw new ApiError("Failed to send email", 401);
