@@ -162,8 +162,7 @@ const DiscussionPage = () => {
             />
           </div>
 
-  
-          <div className="sticky bottom-0 border-border bg-bg-surface px-3 py-2">
+          <div className="fixed bottom-0 w-full max-w-xl md:max-w-2xl xl:max-w-3xl border-border bg-bg-surface px-3 py-2">
             <MessageInput onSend={sendMessage} />
           </div>
         </section>
