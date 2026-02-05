@@ -123,6 +123,7 @@ const login = asyncWrapper(async (req, res) => {
     if (!code) throw new ApiError("Failed to send email", 401);
     res.cookie("token", code, {
       httpOnly: true,
+      secure: true,
       sameSite: "none",
       maxAge: 10 * 60 * 1000,
     });
