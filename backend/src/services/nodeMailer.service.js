@@ -2,34 +2,34 @@ import config from "../configs/env.config.js";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: config.SMTP_USER,
     pass: config.SMTP_PASS,
   },
 });
 
+const verifyTransporter = async () => {
+  await transporter.verify();
+};
+
+verifyTransporter();
+
 const sendMail = async (to, code) => {
-  try {
-    console.log(transporter);
-    console.log(config.SMTP_USER, config.SMTP_PASS);
-    await transporter.sendMail({
-      from: '"Campfire" <${config.SMTP_USER}>',
-      to,
-      subject: "Your Campfire verification code",
-      text: `Your Campfire verification code is ${code}. This code expires in 10 minutes.`,
-      html: `
+  const info = await transporter.sendMail({
+    from: `"Campfire" <${config.SMTP_USER}>`,
+    to,
+    subject: "Your Campfire verification code",
+    text: `Your Campfire verification code is ${code}. This code expires in 10 minutes.`,
+    html: `
       <div style="font-family: Arial, Helvetica, sans-serif; background-color: #f6f7f9; padding: 24px;">
         <div style="max-width: 480px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 24px;">
-
-          <h2 style="margin: 0 0 16px; color: #111827;">
-            Verify your email
-          </h2>
-
+          <h2 style="margin: 0 0 16px; color: #111827;">Verify your email</h2>
           <p style="margin: 0 0 12px; color: #374151; font-size: 14px;">
             Use the following verification code to complete your Campfire signup.
           </p>
-
           <div style="
             margin: 24px 0;
             padding: 16px;
@@ -43,28 +43,22 @@ const sendMail = async (to, code) => {
           ">
             ${code}
           </div>
-
           <p style="margin: 0 0 8px; color: #374151; font-size: 13px;">
             This code will expire in <strong>10 minutes</strong>.
           </p>
-
           <p style="margin: 0; color: #6b7280; font-size: 12px;">
             If you did not request this, you can safely ignore this email.
           </p>
-
           <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;" />
-
           <p style="margin: 0; color: #9ca3af; font-size: 11px; text-align: center;">
             © Campfire — Authentication system
           </p>
-
         </div>
       </div>
     `,
-    });
-  } catch (e) {
-    console.log(e);
-  }
+  });
+
+  return info.messageId;
 };
 
 export default sendMail;
