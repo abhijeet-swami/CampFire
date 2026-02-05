@@ -10,12 +10,15 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendMail = async (to, code) => {
-  await transporter.sendMail({
-    from: '"Campfire" <${config.SMTP_USER}>',
-    to,
-    subject: "Your Campfire verification code",
-    text: `Your Campfire verification code is ${code}. This code expires in 10 minutes.`,
-    html: `
+  try {
+    console.log(transporter);
+    console.log(config.SMTP_USER, config.SMTP_PASS);
+    await transporter.sendMail({
+      from: '"Campfire" <${config.SMTP_USER}>',
+      to,
+      subject: "Your Campfire verification code",
+      text: `Your Campfire verification code is ${code}. This code expires in 10 minutes.`,
+      html: `
       <div style="font-family: Arial, Helvetica, sans-serif; background-color: #f6f7f9; padding: 24px;">
         <div style="max-width: 480px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 24px;">
 
@@ -58,7 +61,10 @@ const sendMail = async (to, code) => {
         </div>
       </div>
     `,
-  });
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export default sendMail;
