@@ -12,12 +12,12 @@ const transporter = nodemailer.createTransport({
 });
 
 const verifyTransporter = async () => {
-  await transporter.verify();
+  const verify = await transporter.verify();
+  console.log(verify);
 };
 
-verifyTransporter();
-
 const sendMail = async (to, code) => {
+  verifyTransporter();
   const info = await transporter.sendMail({
     from: `"Campfire" <${config.SMTP_USER}>`,
     to,
