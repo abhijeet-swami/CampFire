@@ -22,7 +22,7 @@ import UploadAvatar from "./pages/UploadAvatar";
 import CampFeed from "./pages/CampFeed";
 import DiscussionPage from "./pages/DiscussionPage";
 
-const BACKEND_URL = `${import.meta.env.VITE_BACKNED_URL}/health`,;
+const BACKEND_URL = `${import.meta.env.VITE_BACKNED_URL}/health`;
 
 const App = () => {
   const [warming, setWarming] = useState(true);
