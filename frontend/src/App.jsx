@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -22,26 +22,47 @@ import UploadAvatar from "./pages/UploadAvatar";
 import CampFeed from "./pages/CampFeed";
 import DiscussionPage from "./pages/DiscussionPage";
 
+const BACKEND_URL = `${import.meta.env.VITE_BACKNED_URL}/health`,;
+
 const App = () => {
+  const [warming, setWarming] = useState(true);
+
   useEffect(() => {
     const theme = localStorage.getItem("theme") || "default";
     document.documentElement.setAttribute("data-theme", theme);
+
+    const wakeServer = async () => {
+      try {
+        await fetch(BACKEND_URL, { cache: "no-store" });
+      } catch (err) {
+        console.log("Backend still waking...");
+      } finally {
+        setWarming(false);
+      }
+    };
+
+    wakeServer();
   }, []);
 
   return (
     <div className="min-h-screen bg-bg text-text-primary transition-colors duration-300">
-      {/* Global Navbar */}
+      
+      {/* Wakeup banner */}
+      {warming && (
+        <div className="fixed top-0 left-0 w-full bg-yellow-400 text-black text-center text-sm py-1 z-50">
+          Server is starting... first request may take ~30 seconds
+        </div>
+      )}
+
       <Navbar />
 
       <Routes>
-        {/* public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify" element={<VerifyOtp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetVerifyPassword />} />
 
-        {/* protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Home />}>
             <Route index element={<HomeCamp />} />
@@ -49,13 +70,8 @@ const App = () => {
             <Route path="your-camps" element={<YourCamp />} />
             <Route path="create" element={<CreateCamp />} />
             <Route path="settings" element={<Settings />} />
-
             <Route path="camp-feed/:id" element={<CampFeed />} />
-            <Route
-              path="camp-feed/:id/post/:postId"
-              element={<DiscussionPage />}
-            />
-
+            <Route path="camp-feed/:id/post/:postId" element={<DiscussionPage />} />
             <Route path="settings/account" element={<AccountProfile />} />
             <Route path="settings/privacy" element={<SecurityPrivacy />} />
             <Route path="settings/add-interest" element={<AddInterests />} />
