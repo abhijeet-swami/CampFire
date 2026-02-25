@@ -1,14 +1,45 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import FeedHeader from "../components/FeedHeader";
 import FloatingCreateButton from "../components/FloatingCreateButton";
 import CreatePostModal from "../components/CreatePostModal";
 import { useParams } from "react-router-dom";
 import PostCard from "../components/PostCard";
+import Loader from "../components/Loader";
 import { CampContext } from "../context/authContext";
+import { handleError } from "../notify/Notification";
 
 const CampFeed = () => {
   const { id } = useParams();
-  const { posts } = useContext(CampContext);
+  const { posts, setPosts } = useContext(CampContext);
+
+  const [postsLoading, setPostsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setPostsLoading(true);
+
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/get/${id}`,
+          { credentials: "include" }
+        );
+
+        const result = await res.json();
+
+        if (result.success) {
+          setPosts(result.data.posts);
+        }
+      } catch (err) {
+        handleError(err);
+      } finally {
+        setPostsLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [id, setPosts]);
+
+  if (postsLoading) return <Loader />;
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -35,3 +66,4 @@ const CampFeed = () => {
 };
 
 export default CampFeed;
+
