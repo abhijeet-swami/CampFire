@@ -10,15 +10,13 @@ import { handleError } from "../notify/Notification";
 
 const CampFeed = () => {
   const { id } = useParams();
-  const { posts, setPosts } = useContext(CampContext);
+  const { posts, setPosts, setCamp } = useContext(CampContext);
 
-  const [postsLoading, setPostsLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchFeed = async () => {
       try {
-        setPostsLoading(true);
-
         const res = await fetch(
           `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/get/${id}`,
           { credentials: "include" }
@@ -27,19 +25,20 @@ const CampFeed = () => {
         const result = await res.json();
 
         if (result.success) {
+          setCamp(result.data.camp);
           setPosts(result.data.posts);
         }
       } catch (err) {
         handleError(err);
       } finally {
-        setPostsLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchPosts();
-  }, [id, setPosts]);
+    fetchFeed();
+  }, [id, setCamp, setPosts]);
 
-  if (postsLoading) return <Loader />;
+  if (loading) return <Loader />;
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -66,4 +65,3 @@ const CampFeed = () => {
 };
 
 export default CampFeed;
-
