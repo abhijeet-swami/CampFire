@@ -28,24 +28,34 @@ export const CampContextProvider = ({ children }) => {
   const [cursor, setCursor] = useState(null);
   const [me, setMe] = useState(null);
 
+  const [campsLoading, setCampsLoading] = useState(true);
+
   useEffect(() => {
     const fetchYourCamps = async () => {
       try {
+        setCampsLoading(true);
+
         const res = await fetch(
           `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/my-camps`,
-          { credentials: "include" },
+          { credentials: "include" }
         );
+
         const result = await res.json();
+
         if (res.status === 401) {
           setYourCamps([]);
+          setJoinCamps([]);
           return;
         }
+
         if (result.success) {
           setYourCamps(result.data.camps);
           setJoinCamps(result.data.camps);
         }
       } catch (err) {
         handleError(err);
+      } finally {
+        setCampsLoading(false);
       }
     };
 
@@ -85,9 +95,12 @@ export const CampContextProvider = ({ children }) => {
         setMe,
         messagesByPost,
         setMessagesByPost,
+        campsLoading,
+        setCampsLoading,
       }}
     >
       {children}
     </CampContext.Provider>
   );
 };
+
