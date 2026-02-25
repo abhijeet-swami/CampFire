@@ -1,8 +1,9 @@
-import { useContext, useEffect } from "react";
-import { AuthContext, CampContext } from "../context/authContext";
+import { useContext, useEffect, useState } from "react";
+import { CampContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { FaUserGroup } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
+import Loader from "./Loader";
 
 const getRemainingTime = (burnAt) => {
   if (!burnAt) return null;
@@ -21,9 +22,17 @@ const getRemainingTime = (burnAt) => {
 
 const FeedHeader = () => {
   const { id } = useParams();
-  const { setLoading } = useContext(AuthContext);
-  const { camp, setCamp, setPosts, joinCamps, setJoinCamps, setYourCamps } =
-    useContext(CampContext);
+
+  const {
+    camp,
+    setCamp,
+    setPosts,
+    joinCamps,
+    setJoinCamps,
+    setYourCamps,
+  } = useContext(CampContext);
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setCamp(null);
@@ -32,14 +41,17 @@ const FeedHeader = () => {
     const fetchGetCamps = async () => {
       try {
         setLoading(true);
+
         const response = await fetch(
           `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/get/${id}`,
           {
             method: "GET",
             credentials: "include",
-          },
+          }
         );
+
         const result = await response.json();
+
         setCamp(result.data.camp);
         setPosts(result.data.posts);
       } catch (error) {
@@ -50,7 +62,7 @@ const FeedHeader = () => {
     };
 
     fetchGetCamps();
-  }, [id, setLoading, setCamp, setPosts]);
+  }, [id, setCamp, setPosts]);
 
   const handleJoinCamp = async (campId) => {
     try {
@@ -60,8 +72,9 @@ const FeedHeader = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-        },
+        }
       );
+
       const result = await response.json();
 
       if (result.success) {
@@ -80,6 +93,8 @@ const FeedHeader = () => {
     Array.isArray(joinCamps) && joinCamps.some((c) => c._id === camp?._id);
 
   const remainingTime = getRemainingTime(camp?.burnAt);
+
+  if (loading) return <Loader />;
 
   return (
     <section className="bg-bg">
@@ -104,22 +119,19 @@ const FeedHeader = () => {
               }}
               disabled={isJoined || remainingTime === "Expired"}
               className={`
-                shrink-0 h-10 px-5 rounded-full text-sm font-semibold
-                transition
+                shrink-0 h-10 px-5 rounded-full text-sm font-semibold transition
                 ${
-                  isJoined
+                  isJoined || remainingTime === "Expired"
                     ? "bg-surface text-text-muted border border-border cursor-not-allowed"
-                    : remainingTime === "Expired"
-                      ? "bg-surface text-text-muted border border-border cursor-not-allowed"
-                      : "bg-accent hover:bg-accent-hover text-black"
+                    : "bg-accent hover:bg-accent-hover text-black"
                 }
               `}
             >
               {remainingTime === "Expired"
                 ? "Expired"
                 : isJoined
-                  ? "Joined"
-                  : "Join"}
+                ? "Joined"
+                : "Join"}
             </button>
           </div>
 
