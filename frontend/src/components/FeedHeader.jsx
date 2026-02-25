@@ -1,9 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { CampContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { FaUserGroup } from "react-icons/fa6";
-import { useParams } from "react-router-dom";
-import Loader from "./Loader";
 
 const getRemainingTime = (burnAt) => {
   if (!burnAt) return null;
@@ -21,48 +19,8 @@ const getRemainingTime = (burnAt) => {
 };
 
 const FeedHeader = () => {
-  const { id } = useParams();
-
-  const {
-    camp,
-    setCamp,
-    setPosts,
-    joinCamps,
-    setJoinCamps,
-    setYourCamps,
-  } = useContext(CampContext);
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setCamp(null);
-    setPosts([]);
-
-    const fetchGetCamps = async () => {
-      try {
-        setLoading(true);
-
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/get/${id}`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-
-        const result = await response.json();
-
-        setCamp(result.data.camp);
-        setPosts(result.data.posts);
-      } catch (error) {
-        handleError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGetCamps();
-  }, [id, setCamp, setPosts]);
+  const { camp, joinCamps, setJoinCamps, setYourCamps } =
+    useContext(CampContext);
 
   const handleJoinCamp = async (campId) => {
     try {
@@ -94,7 +52,7 @@ const FeedHeader = () => {
 
   const remainingTime = getRemainingTime(camp?.burnAt);
 
-  if (loading) return <Loader />;
+  if (!camp) return null;
 
   return (
     <section className="bg-bg">
@@ -103,10 +61,10 @@ const FeedHeader = () => {
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <h1 className="text-2xl sm:text-3xl font-bold text-text-primary leading-tight">
-                {camp?.title}
+                {camp.title}
               </h1>
 
-              {camp?.description && (
+              {camp.description && (
                 <p className="mt-2 text-sm sm:text-base text-text-secondary line-clamp-2">
                   {camp.description}
                 </p>
@@ -138,7 +96,7 @@ const FeedHeader = () => {
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <span className="flex items-center gap-1 text-text-muted">
               <FaUserGroup size={14} />
-              {camp?.totalUsers} member{camp?.totalUsers > 1 ? "s" : ""}
+              {camp.totalUsers} member{camp.totalUsers > 1 ? "s" : ""}
             </span>
 
             {remainingTime && (
