@@ -140,7 +140,7 @@ const CreateCamp = () => {
 
           <div>
             <label className="block mb-2 text-sm font-semibold text-text-primary">
-              Categories (1–3)
+              Categories ({campForm.category.length}/3)
             </label>
             <div className="flex flex-wrap gap-2">
               {categories.map((category, i) => {
@@ -201,3 +201,4 @@ const CreateCamp = () => {
 };
 
 export default CreateCamp;
+
