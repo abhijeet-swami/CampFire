@@ -12,17 +12,19 @@ const FloatingCreateButton = () => {
       className="
         fixed z-40
         right-4 bottom-20 sm:bottom-8
-        w-14 h-14
+        px-4 h-12
         rounded-full
         bg-accent hover:bg-accent-hover
         text-black
-        flex items-center justify-center
+        flex items-center gap-2
         shadow-xl
         transition-all
         hover:scale-105 active:scale-95
+        text-sm font-semibold
       "
     >
-      <FiPlus className="w-6 h-6" />
+      <FiPlus className="w-5 h-5" />
+      Create Post
     </button>
   );
 };
