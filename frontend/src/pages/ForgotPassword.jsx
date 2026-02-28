@@ -1,49 +1,46 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const { formData, setFormData, loading, setLoading } =
-    useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email) return;
+
     setLoading(true);
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/forgot-password`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/forgot-password`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: formData.email }),
           credentials: "include",
-        },
+          body: JSON.stringify({ email }),
+        }
       );
 
       const result = await response.json();
-      if (result.success) {
+
+      if (response.ok && result.success) {
         handleSuccess(result.message);
+        setEmail("");
         setTimeout(() => navigate("/reset-password"), 2000);
       } else {
-        handleError(result.message);
+        handleError(result.message || "Something went wrong");
       }
-
-      setFormData({ email: "" });
     } catch (error) {
-      handleError(error);
+      handleError("Server error");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -65,9 +62,8 @@ const ForgotPassword = () => {
             </label>
             <input
               type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className="
                 w-full px-3 py-2.5 rounded-xl
@@ -90,7 +86,7 @@ const ForgotPassword = () => {
               ${loading ? "opacity-50 cursor-not-allowed" : ""}
             `}
           >
-            Reset password
+            {loading ? "Sending..." : "Reset password"}
           </button>
         </form>
 
