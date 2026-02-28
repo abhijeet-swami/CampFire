@@ -22,7 +22,7 @@ router.post("/register", validate(registrationSchema), register);
 router.post("/verify-otp", validate(otpSchema), verifyCode);
 router.get("/resend-otp", validate(otpSchema), resendCode);
 router.post("/login", validate(loginSchema), login);
-router.post("/forgot-password", validate(otpSchema), forgotPassword);
+router.post("/forgot-password", forgotPassword);
 router.post("/logout", validateUser, logout);
 
 export default router;
