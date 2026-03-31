@@ -21,7 +21,7 @@ const PostCard = ({ post, campId }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/edit/${post._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/edit/${post._id}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -53,7 +53,7 @@ const PostCard = ({ post, campId }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/delete/${post._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/delete/${post._id}`,
         {
           method: "DELETE",
           credentials: "include",

@@ -54,7 +54,7 @@ const CreateCamp = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/create`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/camp/create`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -19,11 +19,22 @@ const ResetVerifyPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.password) {
+      handleError("Please enter a new password");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      handleError("Password must be at least 6 characters");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/verify-otp`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/verify-otp`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -38,9 +49,13 @@ const ResetVerifyPassword = () => {
       const result = await response.json();
       if (result.success) {
         handleSuccess(result.message);
+        setFormData((prev) => ({ ...prev, otp: "", password: "" }));
+        inputsRef.current = [];
         setTimeout(() => navigate("/login"), 1000);
       } else {
         handleError(result.message);
+        setFormData((prev) => ({ ...prev, otp: "", password: "" }));
+        inputsRef.current = [];
       }
     } catch (error) {
       handleError(error);

@@ -37,7 +37,7 @@ const HomeCamp = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/get`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/camp/get`,
           {
             method: "GET",
             credentials: "include",
@@ -60,7 +60,7 @@ const HomeCamp = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/join/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/camp/join/${id}`,
         {
           method: "POST",
           credentials: "include",

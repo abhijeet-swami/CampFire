@@ -9,6 +9,7 @@ export const AuthContextProvider = ({ children }) => {
     password: "",
     oldPassword: "",
     newPassword: "",
+    otp: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -35,7 +36,7 @@ export const AuthContextProvider = ({ children }) => {
     const verifyUser = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}/api/v1/user/me`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/me`,
           {
             method: "GET",
             credentials: "include",

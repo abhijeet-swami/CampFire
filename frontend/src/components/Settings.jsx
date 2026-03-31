@@ -38,7 +38,7 @@ const Settings = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/logout`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/logout`,
         {
           method: "POST",
           credentials: "include",

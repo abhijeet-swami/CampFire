@@ -21,7 +21,7 @@ const VerifyOtp = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/verify-otp`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/verify-otp`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -72,7 +72,7 @@ const VerifyOtp = () => {
   const handleResendCode = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/resend-otp`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/resend-otp`,
         {
           method: "GET",
           credentials: "include",

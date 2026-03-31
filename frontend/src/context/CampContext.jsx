@@ -36,7 +36,7 @@ export const CampContextProvider = ({ children }) => {
         setCampsLoading(true);
 
         const res = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/my-camps`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/camp/my-camps`,
           { credentials: "include" }
         );
 

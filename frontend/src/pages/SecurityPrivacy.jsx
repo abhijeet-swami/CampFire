@@ -36,7 +36,7 @@ const SecurityPrivacy = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/user/update/password`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/update/password`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -16,7 +16,7 @@ const YourCamp = () => {
       setLoading(true);
 
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/leave/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/camp/leave/${id}`,
         {
           method: "POST",
           credentials: "include",

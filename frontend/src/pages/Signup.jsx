@@ -20,7 +20,7 @@ const Signup = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/register`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

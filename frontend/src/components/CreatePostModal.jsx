@@ -46,7 +46,7 @@ const CreatePostModal = () => {
       if (imageFile) formData.append("post", imageFile);
 
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/create/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/create/${id}`,
         {
           method: "POST",
           body: formData,

@@ -44,7 +44,7 @@ const AccountProfile = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/user/update/profile`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/update/profile`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

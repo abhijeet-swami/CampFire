@@ -29,7 +29,7 @@ const CampsGrid = ({ camps }) => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/join/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/camp/join/${id}`,
         {
           method: "POST",
           credentials: "include",

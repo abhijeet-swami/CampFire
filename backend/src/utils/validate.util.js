@@ -38,6 +38,7 @@ export const otpSchema = z.object({
     .string()
     .trim()
     .regex(/^\d{6}$/, "OTP must be exactly 6 digits"),
+  password: z.string().min(6, "Password must be at least 6 characters").optional(),
 });
 
 export const campSchema = z.object({

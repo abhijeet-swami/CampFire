@@ -24,7 +24,7 @@ const TopCharts = () => {
             : "/api/v1/camp/top";
 
         const response = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}${endpoint}`,
+          `${import.meta.env.VITE_BACKEND_URL}${endpoint}`,
           {
             method: "GET",
             credentials: "include",

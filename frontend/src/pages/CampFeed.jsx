@@ -18,7 +18,7 @@ const CampFeed = () => {
     const fetchFeed = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/get/${id}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/get/${id}`,
           { credentials: "include" }
         );
 

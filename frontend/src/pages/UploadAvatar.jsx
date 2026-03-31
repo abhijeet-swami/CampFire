@@ -21,7 +21,7 @@ const UploadAvatar = () => {
       setLoading(true);
 
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/user/update/avatar`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/update/avatar`,
         {
           method: "POST",
           body: formData,
@@ -51,7 +51,7 @@ const UploadAvatar = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/user/update/avatar`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/update/avatar`,
         {
           method: "DELETE",
           credentials: "include",

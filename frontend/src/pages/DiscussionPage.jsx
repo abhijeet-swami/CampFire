@@ -19,7 +19,7 @@ const DiscussionPage = () => {
       try {
         setMessagesLoading(true);
         const response = await fetch(
-          `${import.meta.env.VITE_BACKNED_URL}/api/v1/message/get/${postId}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/message/get/${postId}`,
           { method: "GET", credentials: "include" },
         );
         const result = await response.json();
